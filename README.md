@@ -2,6 +2,8 @@
 
 Static marketing site for the *Superhero Santa* picture-book series. Hosted on GitHub Pages; no build step.
 
+Working on it? Read `CLAUDE.md` and `docs/HANDOFF.md`. Site owner checklist: `OWNER-TODO.md`.
+
 ```
 index.html      the whole page (CSS + JS inline)
 assets/img/     all artwork (WebP/JPG), referenced by relative path
