@@ -929,11 +929,11 @@ footer .bottom{margin-top:60px;padding-top:22px;border-top:1px solid rgba(251,23
 @media (max-width:900px){.hero-copy>p{color:#2a1f2b;font-weight:500}}
 
 /* v31: backdrop scales with the cast, not the viewport */
-#hero{--bgh:max(calc(2.3*var(--cs)),calc(100vw/1.788));
+#hero{--bgh:max(calc(1.866*var(--cs)),calc(100vw/2.203));
 background-image:linear-gradient(to bottom,#d9d2ee 0,#aaa3d6 calc(55% - 0.5*var(--bgh)),#8b87bf calc(100% - var(--bgh) + 2px),rgba(139,135,191,0) calc(100% - var(--bgh) + 0.35*var(--cs))),var(--bgimg);
 background-size:100% 100%,auto var(--bgh);background-position:0 0,center bottom;background-repeat:no-repeat;
 background-color:#8b87bf}
-@media (max-width:900px){#hero{--bgh:max(calc(2.3*var(--cs) + var(--lift)),calc(100vw/1.788))}}
+@media (max-width:900px){#hero{--bgh:max(calc(1.866*var(--cs) + var(--lift)),calc(100vw/2.203))}}
 </style>
 </head>
 <body>
