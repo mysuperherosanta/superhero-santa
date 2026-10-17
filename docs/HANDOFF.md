@@ -60,6 +60,12 @@ Images were generated with Higgsfield (`gpt_image_2_5`) and background-removed t
    - two thin white slivers on the cast: under the elf boy's left arm, and along Santa's right edge;
    - white gaps around the donkey/lamb legs and beside Joseph's staff in the stable image (a clean family crop exists in `design-src/nativity/famcrop.webp`, but its stable background doesn't line up with `stable2`, so it needs a feathered blend or a regenerated stable);
    - Reindeer `alt` text still says "hiding behind the canyon"; there's no canyon any more.
+2b. **Copy still out of step with the owner's story** (from his Oct text review; not changed yet, confirm with him first):
+   - Timing: the Reindeer vanish *after New Year's* ("after the second-biggest night of the year"), but `#story` still says "The sleigh is packed" and "made for the night before Christmas".
+   - Clues: there are *no* hoofprints in the book, but `#story` says Santa "follows the hoofprints", and the page has a "Follow the hoofprints ↓" link, a hoofprint trail in `#trail` and clickable hoofprints. Needs a new motif (snowy trail, footprints of the search party, the star…).
+   - `#series`: he wants to rework this section, stretching one image across the whole section and dropping or folding in the three cards. Ask for specifics.
+   - JSON-LD book name is still "Santa: The Reindeer Are Missing"; the series card now reads "Santa, the Reindeer Are Missing!". Pick one official title and use it everywhere.
+2c. **Character pages (later):** each search-party card should click through to its own page, with games/activities per character.
 3. **Collapse the hero CSS override stack** (see CSS debt above).
 4. **Performance:** add `width`/`height` to all `<img>`, `loading="lazy"` below the fold, `fetchpriority="high"` on the hero layers; consider `<picture>` with a smaller backdrop for phones. Target LCP < 2 s on mobile.
 5. **Share image:** make a dedicated 1200×630 `og:image` (currently points at the book cover JPG).
