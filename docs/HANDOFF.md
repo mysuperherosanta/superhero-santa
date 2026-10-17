@@ -4,10 +4,10 @@ _Last updated 2026-10-02. Picks up from a long Cowork design session; this repo 
 
 ## Where things stand
 
-- **Site:** one long page, `index.html` (≈100 KB, CSS + JS inline), artwork in `assets/img/` (≈1.3 MB total). Matches design version **v32** of the Claude artifact preview. From here on, edit this repo, not the artifact.
+- **Site:** Next.js 16 App Router, static export (`output: 'export'`) → `out/`. One page so far: `app/page.tsx` renders `content/home.html` verbatim; CSS in `public/css/site.css`, interactions in `public/js/site.js`, GSAP/Lenis self-hosted in `public/vendor/`, artwork in `public/assets/img/` (≈1.3 MB). Matches artifact preview **v35**. From here on, edit this repo, not the artifact. Verified: builds clean, no console errors, works at `/` and under `/superherosantaclaus/` base path.
 - **Repo:** local only, one commit on `main`. **Not pushed yet.** Plan: the friend (author) owns the GitHub repo and adds Nate as a collaborator; see `OWNER-TODO.md`.
-- **Hosting:** GitHub Pages, `main` / root, `.nojekyll`. Cost is the domain only (~$10–20/yr).
-- **Domain:** `superherosantaclaus.com`. DNS not pointed yet; registrar unknown. No `CNAME` file in the repo on purpose: add it (via Settings → Pages → Custom domain) only once DNS is set, or the github.io URL redirects to a dead domain.
+- **Hosting:** GitHub Pages via GitHub Actions (`.github/workflows/deploy.yml`; Settings → Pages → Source must be *GitHub Actions*). Base path comes from `actions/configure-pages`, so it switches automatically when the custom domain is added. Cost is the domain only (~$10–20/yr).
+- **Domain:** `superherosantaclaus.com`. DNS not pointed yet; registrar unknown. Set the custom domain in Settings → Pages only once DNS is pointed, then re-run the deploy workflow.
 - **Forms:** every "Join the list" button is a `mailto:hello@superherosantaclaus.com` link. There is no real signup form yet (see backlog #1).
 
 ## Page map
@@ -22,7 +22,7 @@ _Last updated 2026-10-02. Picks up from a long Cowork design session; this repo 
 | `#series` | The series / character cards (front + side views flip) |
 | `#join` | Launch-list CTA |
 
-**Interactions (JS at the bottom of `index.html`):** preloader; custom cursor (fine pointers only); Lenis smooth scroll; parallax via `data-depth`; tap a character → speech bubble from `data-say`; hidden-object hunt (candy cane `#cane`, star `#gstar`, peeking Reindeer `#deer`/`#peek`) with counter `#counter` and confetti `#conf`; sound toggle `#sfx`; `prefers-reduced-motion` respected.
+**Interactions (`public/js/site.js`):** preloader; custom cursor (fine pointers only); Lenis smooth scroll; parallax via `data-depth`; tap a character → speech bubble from `data-say`; hidden-object hunt (candy cane `#cane`, star `#gstar`, peeking Reindeer `#deer`/`#peek`) with counter `#counter` and confetti `#conf`; sound toggle `#sfx`; `prefers-reduced-motion` respected.
 
 ## How the hero works (read before touching it)
 
@@ -35,7 +35,7 @@ All hero layers are positioned on one virtual canvas:
 - **Backdrop scales with the cast, not the viewport** (v31): `--bgh = max(2.3·cs, 100vw/1.788)`, image anchored `center bottom`. Above the image, a lavender gradient (`#d9d2ee → #aaa3d6 → #8b87bf`) fills tall phone screens and fades into the image top. If you swap the backdrop, resample its top-row colour and update those three stops plus `background-color`.
 - Layers in the DOM: `.stable3 img` (stable + Holy Family + animals, `assets/img/stable.webp`), `.nativity img` (Santa, Mrs. Claus, bookkeeper elf baked together, `nativity-cast.webp`; the `.ch-santa/.ch-mrs/.ch-elf` imgs are 1×1 placeholders that only carry hit areas and speech bubbles), `.ch-boy`, `.ch-girl`, `.ch-deer` (each its own webp).
 
-**CSS debt:** lines ~445–935 are a stack of successive override passes (`sunset scene pass`, `painted canyon backdrop`, `proportion pass`, `deep pass`, `ONE SCALE`, `ONE RENDER`, `v30`, `v31`). Only the last few actually win. A cleanup that collapses them into one hero block is worth doing before anything else in the hero — diff screenshots at the three widths before and after.
+**CSS debt:** in `public/css/site.css`, roughly the second half is a stack of successive override passes (`sunset scene pass`, `painted canyon backdrop`, `proportion pass`, `deep pass`, `ONE SCALE`, `ONE RENDER`, `v30`, `v31`). Only the last few actually win. A cleanup that collapses them into one hero block is worth doing before anything else in the hero — diff screenshots at the three widths before and after.
 
 ## Source art (`design-src/`)
 
@@ -67,10 +67,10 @@ Images were generated with Higgsfield (`gpt_image_2_5`) and background-removed t
    - JSON-LD book name is still "Santa: The Reindeer Are Missing"; the series card now reads "Santa, the Reindeer Are Missing!". Pick one official title and use it everywhere.
 2c. **Character pages (later):** each search-party card should click through to its own page, with games/activities per character.
 3. **Collapse the hero CSS override stack** (see CSS debt above).
-4. **Performance:** add `width`/`height` to all `<img>`, `loading="lazy"` below the fold, `fetchpriority="high"` on the hero layers; consider `<picture>` with a smaller backdrop for phones. Target LCP < 2 s on mobile.
+4. **Performance:** add `width`/`height` to all `<img>` in `content/home.html`, `loading="lazy"` below the fold, `fetchpriority="high"` on the hero layers; consider `<picture>` with a smaller backdrop for phones. Target LCP < 2 s on mobile.
 5. **Share image:** make a dedicated 1200×630 `og:image` (currently points at the book cover JPG).
 6. **Analytics:** Cloudflare Web Analytics snippet (free, no cookie banner) + verify the domain in Google Search Console and submit `sitemap.xml`.
-7. **More pages** from the SEO plan in `docs/private/` (parent guide, /for-churches, character pages, printables). Each gets its own canonical, JSON-LD and sitemap entry.
+7. **More pages** (normal App Router routes in TSX; first candidates: `/characters/[slug]` via `generateStaticParams`, linked from the search-party cards) from the SEO plan in `docs/private/` (parent guide, /for-churches, character pages, printables). Each gets its own canonical, JSON-LD and sitemap entry.
 8. **Later, optional: a small backend for leads/SEO tracking.** Recommended stack, all free tier: Cloudflare Workers (`/api/lead`), D1 (database), Workers cron (nightly Search Console pull), Cloudflare Access (login), and a Pages dashboard. Avoid Supabase free (projects pause after ~1 week idle). Keep the marketing site static either way.
 
 ## Private docs (gitignored, `docs/private/`)

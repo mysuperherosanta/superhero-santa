@@ -1,3 +1,8 @@
 .DS_Store
 *.bak
 docs/private/
+node_modules/
+.next/
+out/
+next-env.d.ts
+*.tsbuildinfo
