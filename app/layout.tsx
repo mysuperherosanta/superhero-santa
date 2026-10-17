@@ -5,12 +5,12 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: "Superhero Santa",
   description:
-    "Superhero Santa is a toddler bedtime picture-book series about Santa Claus and the spirit of Christmas. Book One, Santa: The Reindeer Are Missing, is coming soon. Join the launch list.",
+    "Superhero Santa is a toddler bedtime picture-book series about Santa Claus and the spirit of Christmas. Book One — “Santa, the Reindeer Are Missing!” — is coming soon. Join the launch list.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     url: "/",
-    title: "Superhero Santa — Book One: Santa, the Reindeer Are Missing",
+    title: "Superhero Santa — Book One: Santa, the Reindeer Are Missing!",
     images: ["/assets/img/book-one-cover.jpg"],
   },
   twitter: { card: "summary_large_image" },

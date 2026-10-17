@@ -13,8 +13,8 @@
       <path d="M26 20c-3-6-8-8-10-14M26 20c2-6 0-10-4-14M40 20c3-6 8-8 10-14M40 20c-2-6 0-10 4-14"/>
       <circle cx="52" cy="40" r="2.6" fill="#B4202B" stroke="none"/>
     </symbol>
-    <symbol id="hoof" viewBox="0 0 20 20">
-      <path d="M6 4c-2 0-3 2-3 5s2 7 4 7 3-3 3-6-2-6-4-6zM14 4c2 0 3 2 3 5s-2 7-4 7-3-3-3-6 2-6 4-6z"/>
+    <symbol id="boot" viewBox="0 0 20 20">
+      <path d="M5.5 3c1.8 0 3 1.9 3 4.3S7.3 11.5 5.5 11.5 2.5 9.7 2.5 7.3 3.7 3 5.5 3zM5.5 12.8c1.3 0 2.2.9 2.2 2.1s-.9 2.1-2.2 2.1-2.2-.9-2.2-2.1.9-2.1 2.2-2.1zM14.5 1c1.8 0 3 1.9 3 4.3S16.3 9.5 14.5 9.5 11.5 7.7 11.5 5.3 12.7 1 14.5 1zM14.5 10.8c1.3 0 2.2.9 2.2 2.1S15.8 15 14.5 15s-2.2-.9-2.2-2.1.9-2.1 2.2-2.1z"/>
     </symbol>
   </defs>
 </svg>
@@ -71,14 +71,14 @@
     <div class="ch ch-santa" data-depth="0.06" data-say="Ho ho ho! Have you seen my Reindeer?"><div class="fig"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Santa Claus"><span class="say" aria-hidden="true"></span></div></div>
     <div class="ch ch-mrs" data-depth="0.05" data-say="Cocoa first. Then we search."><div class="fig"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="Mrs. Claus"><span class="say" aria-hidden="true"></span></div></div>
     <div class="ch ch-elf" data-depth="0.055" data-say="The map says… south!"><div class="fig"><img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="The elf with the map"><span class="say" aria-hidden="true"></span></div></div>
-    <div class="ch ch-boy" data-depth="0.07" data-say="I found a hoofprint!"><div class="fig"><img src="assets/img/hero-boy.webp" alt="The elf boy"><span class="say" aria-hidden="true"></span></div></div>
+    <div class="ch ch-boy" data-depth="0.07" data-say="Which way did they go?"><div class="fig"><img src="assets/img/hero-boy.webp" alt="The elf boy"><span class="say" aria-hidden="true"></span></div></div>
     <div class="ch ch-girl" data-depth="0.075" data-say="Look! Over there!"><div class="fig"><img src="assets/img/hero-girl.webp" alt="The elf girl, pointing"><span class="say" aria-hidden="true"></span></div></div>
 
   <div class="hidey" aria-hidden="true"><svg viewBox="0 0 240 110"><path fill="#BFD8EA" d="M6 110c4-34 20-58 44-70 18-9 30-4 44-14 16-11 34-16 52-8 16 7 22 22 38 28 20 8 40 22 50 64z"/><path fill="#DCEAF4" d="M30 110c6-26 20-44 40-52 14-6 24-2 36-10 12-8 26-12 40-6 12 5 18 16 30 21 14 6 28 16 36 47z"/><path fill="#FFFDF9" d="M6 110c4-16 10-29 18-38 10 4 16 12 26 10 12-3 16-14 28-16 14-2 22 8 34 6 12-2 16-12 28-12 14 0 22 12 34 16 10 3 18-3 28-6 8 10 14 22 18 40z"/></svg></div>
-  <div class="ch ch-deer" id="deer" data-depth="0.08" data-say="You found me!"><div class="fig"><img src="assets/img/hero-reindeer.webp" alt="The Reindeer, hiding behind the canyon"><span class="nose" aria-hidden="true"></span><span class="q" aria-hidden="true">?</span><span class="say" aria-hidden="true"></span></div></div>
-  <button id="peek" type="button" aria-label="Something is hiding behind the rocks — click to find out"></button>
+  <div class="ch ch-deer" id="deer" data-depth="0.08" data-say="You found me!"><div class="fig"><img src="assets/img/hero-reindeer.webp" alt="The Reindeer, hiding behind a snowdrift"><span class="nose" aria-hidden="true"></span><span class="q" aria-hidden="true">?</span><span class="say" aria-hidden="true"></span></div></div>
+  <button id="peek" type="button" aria-label="Something is hiding behind the snowdrift — click to find out"></button>
   <div class="findme hero-deer-cta" id="findme" aria-hidden="true">
-    <b>Tap this rock!</b>
+    <b>Tap the snowdrift!</b>
     <svg viewBox="0 0 34 40"><path d="M17 4v28"/><path d="M8 24l9 10 9-10"/></svg>
   </div>
   <button class="hunt" id="cane" type="button" aria-label="Find the lost candy cane">
@@ -90,7 +90,7 @@
   <canvas id="snowc" aria-hidden="true"></canvas>
   <div class="hero-copy">
     <p class="label"><i></i>Book One · Coming soon</p>
-    <h1 id="h1"><span class="l"><span><span class="w">Santa,</span></span></span><span class="l"><span><span class="w">the</span> <span class="w">sleigh</span> <span class="w">Reindeer</span></span></span><span class="l"><span><span class="w">are</span> <em class="w">missing.</em></span></span></h1>
+    <h1 id="h1"><span class="l"><span><span class="w">Santa,</span></span></span><span class="l"><span><span class="w">the</span> <span class="w">Reindeer</span></span></span><span class="l"><span><span class="w">Are</span> <em class="w">Missing!</em></span></span></h1>
     <p>A North Pole bedtime story for families who love Christmas — and the reason for it. Tap the cast to say hello, and find the three things hiding in this picture.</p>
     <div class="stickers">
       <span class="sticker cream"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 7 7.1.6-5.4 4.7 1.7 7.2L12 17.8 5.7 21.5l1.7-7.2L2 9.6 9.1 9z"/></svg>Ages 1–3</span>
@@ -114,7 +114,7 @@
 
 <div class="ribbon" aria-hidden="true">
   <div class="track" id="track">
-    <span>Book One <svg viewBox="0 0 24 24"><path d="M12 2l2.9 7 7.1.6-5.4 4.7 1.7 7.2L12 17.8 5.7 21.5l1.7-7.2L2 9.6 9.1 9z"/></svg> The Reindeer Are Missing <svg viewBox="0 0 24 24"><path d="M12 2l2.9 7 7.1.6-5.4 4.7 1.7 7.2L12 17.8 5.7 21.5l1.7-7.2L2 9.6 9.1 9z"/></svg> Coming soon <svg viewBox="0 0 24 24"><path d="M12 2l2.9 7 7.1.6-5.4 4.7 1.7 7.2L12 17.8 5.7 21.5l1.7-7.2L2 9.6 9.1 9z"/></svg> superherosantaclaus.com <svg viewBox="0 0 24 24"><path d="M12 2l2.9 7 7.1.6-5.4 4.7 1.7 7.2L12 17.8 5.7 21.5l1.7-7.2L2 9.6 9.1 9z"/></svg></span>
+    <span>Book One <svg viewBox="0 0 24 24"><path d="M12 2l2.9 7 7.1.6-5.4 4.7 1.7 7.2L12 17.8 5.7 21.5l1.7-7.2L2 9.6 9.1 9z"/></svg> Santa, the Reindeer Are Missing! <svg viewBox="0 0 24 24"><path d="M12 2l2.9 7 7.1.6-5.4 4.7 1.7 7.2L12 17.8 5.7 21.5l1.7-7.2L2 9.6 9.1 9z"/></svg> Coming soon <svg viewBox="0 0 24 24"><path d="M12 2l2.9 7 7.1.6-5.4 4.7 1.7 7.2L12 17.8 5.7 21.5l1.7-7.2L2 9.6 9.1 9z"/></svg> superherosantaclaus.com <svg viewBox="0 0 24 24"><path d="M12 2l2.9 7 7.1.6-5.4 4.7 1.7 7.2L12 17.8 5.7 21.5l1.7-7.2L2 9.6 9.1 9z"/></svg></span>
   </div>
 </div>
 
@@ -122,21 +122,21 @@
   <div class="wrap grid">
     <div>
       <p class="eyebrow label rv"><i></i>The story</p>
-      <h2 id="story-h" class="h2 rv">The sleigh is packed. The sky is clear. And the sleigh Reindeer are gone.</h2>
+      <h2 id="story-h" class="h2 rv">The presents are delivered. The New Year has rung in. And the sleigh Reindeer are gone.</h2>
       <div class="lede" style="margin-top:22px">
-        <p class="rv">Santa doesn't panic. He pulls on his boots, gathers his best elves and a very old map, and follows the hoofprints out across the snow, past the pines, under a sky full of stars.</p>
-        <p class="rv">Book One of the Superhero Santa series is a toddler bedtime reader for ages 1 to 3 — short lines, big pictures, made for the night before Christmas and every night in December.</p>
+        <p class="rv">Santa doesn't panic. He pulls on his boots, gathers his best elves and a very old map, and sets off along a long, snowy trail, past the pines, under a sky full of stars.</p>
+        <p class="rv">Book One of the Superhero Santa series is a toddler bedtime reader for ages 1 to 3 — short lines, big pictures, made for cozy bedtimes all through the Christmas season.</p>
       </div>
     </div>
     <div class="deer-card rv">
-      <img class="real" src="assets/img/reindeer.webp" alt="A sleigh Reindeer, seen from the side, walking away along the trail">
-      <svg class="deer" viewBox="0 0 320 200" role="img" aria-label="A trail of hoofprints in the snow">
+      <img class="real" src="assets/img/reindeer.webp" alt="A sleigh Reindeer, seen from the side, wandering off into the snow">
+      <svg class="deer" viewBox="0 0 320 200" role="img" aria-label="Boot prints from the search party, winding across the snow">
         <path d="M14 168c40-2 60-30 100-22s60 30 100 12 60-44 92-30" fill="none" stroke="#B45A3C" stroke-width="2.5" stroke-dasharray="8 10" stroke-linecap="round"/>
-        <g fill="#B45A3C"><use href="#hoof" x="30" y="140" width="16" height="16"/><use href="#hoof" x="70" y="150" width="16" height="16"/><use href="#hoof" x="118" y="144" width="16" height="16"/><use href="#hoof" x="166" y="156" width="16" height="16"/></g>
+        <g fill="#B45A3C"><use href="#boot" x="30" y="140" width="16" height="16"/><use href="#boot" x="70" y="150" width="16" height="16"/><use href="#boot" x="118" y="144" width="16" height="16"/><use href="#boot" x="166" y="156" width="16" height="16"/></g>
         
         <g fill="none" stroke="#F5B98A" stroke-width="1.6" stroke-linecap="round"><path d="M60 40l0 12M54 46l12 0M58 42l8 8M66 42l-8 8"/><path d="M120 24l0 10M115 29l10 0"/><path d="M250 26l0 12M244 32l12 0M247 29l6 6M253 29l-6 6"/></g>
       </svg>
-      <div class="cap"><b>Where did they go?</b><span class="label">Follow the hoofprints ↓</span></div>
+      <div class="cap"><b>Where did they go?</b><span class="label">Follow the trail ↓</span></div>
     </div>
   </div>
 </section>
@@ -154,10 +154,10 @@
       <svg viewBox="0 0 1000 72" preserveAspectRatio="none">
         <path id="dash" class="dash" d="M0 40 C 120 10, 200 70, 330 40 S 560 10, 680 44 S 900 60, 1000 36"/>
       </svg>
-      <svg class="hoofs" viewBox="0 0 1000 72" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible">
-        <use class="hoof" href="#hoof" x="60" y="10" width="18" height="18"/><use class="hoof" href="#hoof" x="180" y="44" width="18" height="18"/><use class="hoof" href="#hoof" x="300" y="14" width="18" height="18"/><use class="hoof" href="#hoof" x="430" y="46" width="18" height="18"/><use class="hoof" href="#hoof" x="560" y="10" width="18" height="18"/><use class="hoof" href="#hoof" x="700" y="50" width="18" height="18"/><use class="hoof" href="#hoof" x="830" y="16" width="18" height="18"/><use class="hoof" href="#hoof" x="950" y="44" width="18" height="18"/>
+      <svg class="prints" viewBox="0 0 1000 72" preserveAspectRatio="none" style="position:absolute;inset:0;width:100%;height:100%;overflow:visible">
+        <use class="print" href="#boot" x="60" y="10" width="18" height="18"/><use class="print" href="#boot" x="180" y="44" width="18" height="18"/><use class="print" href="#boot" x="300" y="14" width="18" height="18"/><use class="print" href="#boot" x="430" y="46" width="18" height="18"/><use class="print" href="#boot" x="560" y="10" width="18" height="18"/><use class="print" href="#boot" x="700" y="50" width="18" height="18"/><use class="print" href="#boot" x="830" y="16" width="18" height="18"/><use class="print" href="#boot" x="950" y="44" width="18" height="18"/>
       </svg>
-      <div class="deer-marker" id="marker"><img src="assets/img/reindeer.webp" alt=""></div>
+      <div class="deer-marker" id="marker"><img src="assets/img/santa-side.webp" alt=""></div>
     </div>
     <div class="rail" id="rail">
       <figure class="frame f-char c-santa"><span class="orb" aria-hidden="true"></span><img class="v front" src="assets/img/santa-front.webp" alt="Santa Claus, white-haired with a trimmed beard, in a red fur-trimmed suit and black boots"><img class="v side" src="assets/img/santa-side.webp" alt="" aria-hidden="true"><figcaption class="name"><b>Santa</b><span>The helper</span></figcaption></figure>
@@ -212,7 +212,7 @@
     <h2 id="series-h" class="h2 rv">One North Pole. A whole shelf of stories.</h2>
     <div class="stack" id="stack">
       <article class="card hero-card">
-        <div class="art" aria-hidden="true"><span class="orb"></span><span class="ground"></span><img class="boy" src="assets/img/elf-boy-front.webp" alt=""><img class="mini" src="assets/img/book-one-spread.jpg" alt=""><img class="girl" src="assets/img/elf-girl-front.webp" alt=""></div>
+        <div class="art"><img src="assets/img/book-one-spread.jpg" alt="Santa, Mrs. Claus and the elves gather in the snow at sunset, with two sleigh Reindeer close by" width="700" height="1043" loading="lazy"></div>
         <span class="num">1</span>
         <h3>Santa, the Reindeer Are Missing!</h3>
         <p>The toddler bedtime reader that starts it all. Coming soon in print and ebook.</p>
@@ -285,6 +285,6 @@
   </div>
   <div class="wrap bottom">
     <span>© 2026 Superhero Santa · superherosantaclaus.com</span>
-    <span>Book One: Santa, the Reindeer Are Missing</span>
+    <span>Book One: Santa, the Reindeer Are Missing!</span>
   </div>
 </footer>

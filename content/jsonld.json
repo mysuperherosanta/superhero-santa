@@ -1,5 +1,5 @@
 {"@context":"https://schema.org","@graph":[
 {"@type":"Organization","@id":"https://superherosantaclaus.com/#org","name":"Superhero Santa","url":"https://superherosantaclaus.com/","email":"hello@superherosantaclaus.com"},
 {"@type":"BookSeries","@id":"https://superherosantaclaus.com/#series","name":"Superhero Santa","url":"https://superherosantaclaus.com/","publisher":{"@id":"https://superherosantaclaus.com/#org"}},
-{"@type":"Book","name":"Santa: The Reindeer Are Missing","alternateName":"Book 1: Santa, the Reindeer Are Missing","url":"https://superherosantaclaus.com/#story","isPartOf":{"@id":"https://superherosantaclaus.com/#series"},"position":1,"genre":"Children's Christian holiday fiction","audience":{"@type":"PeopleAudience","suggestedMinAge":1,"suggestedMaxAge":3}}
+{"@type":"Book","name":"Santa, the Reindeer Are Missing!","url":"https://superherosantaclaus.com/#story","isPartOf":{"@id":"https://superherosantaclaus.com/#series"},"position":1,"genre":"Children's Christian holiday fiction","audience":{"@type":"PeopleAudience","suggestedMinAge":1,"suggestedMaxAge":3}}
 ]}

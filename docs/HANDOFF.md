@@ -1,11 +1,11 @@
 # Handoff — superherosantaclaus.com
 
-_Last updated 2026-10-02. Picks up from a long Cowork design session; this repo is now the source of truth._
+_Last updated 2026-10-17. Picks up from a long Cowork design session; this repo is now the source of truth._
 
 ## Where things stand
 
 - **Site:** Next.js 16 App Router, static export (`output: 'export'`) → `out/`. One page so far: `app/page.tsx` renders `content/home.html` verbatim; CSS in `public/css/site.css`, interactions in `public/js/site.js`, GSAP/Lenis self-hosted in `public/vendor/`, artwork in `public/assets/img/` (≈1.3 MB). Matches artifact preview **v35**. From here on, edit this repo, not the artifact. Verified: builds clean, no console errors, works at `/` and under `/superherosantaclaus/` base path.
-- **Repo:** local only, one commit on `main`. **Not pushed yet.** Plan: the friend (author) owns the GitHub repo and adds Nate as a collaborator; see `OWNER-TODO.md`.
+- **Repo:** local only. **Not pushed yet.** Plan: the friend (author) owns the GitHub repo and adds Nate as a collaborator; see `OWNER-TODO.md`.
 - **Hosting:** GitHub Pages via GitHub Actions (`.github/workflows/deploy.yml`; Settings → Pages → Source must be *GitHub Actions*). Base path comes from `actions/configure-pages`, so it switches automatically when the custom domain is added. Cost is the domain only (~$10–20/yr).
 - **Domain:** `superherosantaclaus.com`. DNS not pointed yet; registrar unknown. Set the custom domain in Settings → Pages only once DNS is pointed, then re-run the deploy workflow.
 - **Forms:** every "Join the list" button is a `mailto:hello@superherosantaclaus.com` link. There is no real signup form yet (see backlog #1).
@@ -16,10 +16,10 @@ _Last updated 2026-10-02. Picks up from a long Cowork design session; this repo 
 |---|---|
 | `#hero` | Interactive scene: snowy European town backdrop, nativity stable with Holy Family + animals, Santa/Mrs. Claus/bookkeeper elf (one baked image), elf boy, elf girl, hiding Reindeer. Headline + CTA on the left (top on mobile). |
 | `#story` | About Book One |
-| `#trail` | Pinned horizontal "look inside" scroll (GSAP ScrollTrigger) with the hoofprint trail and Reindeer marker |
+| `#trail` | Pinned horizontal "look inside" scroll (GSAP ScrollTrigger) with the search party's boot-print trail and a walking Santa marker |
 | `#fun` | What's inside (kid-facing cards) |
 | `#reason` | "Santa is the helper. Christmas has a hero." — faith message |
-| `#series` | The series / character cards (front + side views flip) |
+| `#series` | Three series cards; card 1 (Book One) has the book-one spread full-bleed across its top |
 | `#join` | Launch-list CTA |
 
 **Interactions (`public/js/site.js`):** preloader; custom cursor (fine pointers only); Lenis smooth scroll; parallax via `data-depth`; tap a character → speech bubble from `data-say`; hidden-object hunt (candy cane `#cane`, star `#gstar`, peeking Reindeer `#deer`/`#peek`) with counter `#counter` and confetti `#conf`; sound toggle `#sfx`; `prefers-reduced-motion` respected.
@@ -50,21 +50,14 @@ All hero layers are positioned on one virtual canvas:
 | `backdrops/european-town-A.png` | Current backdrop, full resolution (1344×752) |
 | `backdrops/jerusalem.webp` | Previous backdrop (v30–31) |
 | `scripts/*.py` | One-off Python/Pillow scripts from the session (edge cleanup `fringe.py`, `clean3.py`; layer builder `cast_build5.py`; zoom-grid helper `grid.py`). Paths inside are from the old sandbox; adapt before reuse. |
+| `scripts/gapfix.py`, `gapfill.py` | Oct 17 sliver cleanup (numpy + Pillow only). `gapfix` makes light gaps transparent (cast, elf boy); `gapfill` fills gaps inside the opaque stable by cloning nearby straw/wood or blending across the gap. Exact runs below. |
 
 Images were generated with Higgsfield (`gpt_image_2_5`) and background-removed there.
 
 ## Backlog (in rough priority order)
 
 1. **Real email signup.** Replace the `mailto:` CTAs with an embedded MailerLite (or Kit) form; the owner picks the service and creates the account (see `OWNER-TODO.md`). Keep a mailto fallback in the footer.
-2. **Small hero fixes the owner flagged** ("a few small things", not yet specified). Ask him for the list. Known candidates:
-   - two thin white slivers on the cast: under the elf boy's left arm, and along Santa's right edge;
-   - white gaps around the donkey/lamb legs and beside Joseph's staff in the stable image (a clean family crop exists in `design-src/nativity/famcrop.webp`, but its stable background doesn't line up with `stable2`, so it needs a feathered blend or a regenerated stable);
-   - Reindeer `alt` text still says "hiding behind the canyon"; there's no canyon any more.
-2b. **Copy still out of step with the owner's story** (from his Oct text review; not changed yet, confirm with him first):
-   - Timing: the Reindeer vanish *after New Year's* ("after the second-biggest night of the year"), but `#story` still says "The sleigh is packed" and "made for the night before Christmas".
-   - Clues: there are *no* hoofprints in the book, but `#story` says Santa "follows the hoofprints", and the page has a "Follow the hoofprints ↓" link, a hoofprint trail in `#trail` and clickable hoofprints. Needs a new motif (snowy trail, footprints of the search party, the star…).
-   - `#series`: he wants to rework this section, stretching one image across the whole section and dropping or folding in the three cards. Ask for specifics.
-   - JSON-LD book name is still "Santa: The Reindeer Are Missing"; the series card now reads "Santa, the Reindeer Are Missing!". Pick one official title and use it everywhere.
+2. **Hero fixes and story copy: done 2026-10-17** (see "Oct 17 changes" below). The owner still hasn't sent his own "few small things" list; ask for it.
 2c. **Character pages (later):** each search-party card should click through to its own page, with games/activities per character.
 3. **Collapse the hero CSS override stack** (see CSS debt above).
 4. **Performance:** add `width`/`height` to all `<img>` in `content/home.html`, `loading="lazy"` below the fold, `fetchpriority="high"` on the hero layers; consider `<picture>` with a smaller backdrop for phones. Target LCP < 2 s on mobile.
@@ -72,6 +65,20 @@ Images were generated with Higgsfield (`gpt_image_2_5`) and background-removed t
 6. **Analytics:** Cloudflare Web Analytics snippet (free, no cookie banner) + verify the domain in Google Search Console and submit `sitemap.xml`.
 7. **More pages** (normal App Router routes in TSX; first candidates: `/characters/[slug]` via `generateStaticParams`, linked from the search-party cards) from the SEO plan in `docs/private/` (parent guide, /for-churches, character pages, printables). Each gets its own canonical, JSON-LD and sitemap entry.
 8. **Later, optional: a small backend for leads/SEO tracking.** Recommended stack, all free tier: Cloudflare Workers (`/api/lead`), D1 (database), Workers cron (nightly Search Console pull), Cloudflare Access (login), and a Pages dashboard. Avoid Supabase free (projects pause after ~1 week idle). Keep the marketing site static either way.
+
+## Oct 17 changes
+
+- **Slivers and gaps.** Cleaned in place in `public/assets/img/` (the `design-src/layers/*_fh.webp` copies are the pre-fix originals):
+  - `python3 gapfix.py hero-boy.webp out.webp 94,1030,102,1135 125,1010,142,1062 108,1085,132,1150 226,1015,241,1058 234,1080,258,1155 262,1010,270,1030 178,1112,190,1232,180,60 128,1175,136,1195` (gaps between the boy's arms, hands, legs and body)
+  - `python3 gapfix.py nativity-cast.webp out.webp 668,928,692,986 194,954,210,994,195,32 120,1090,132,1130 240,858,250,885` (under Santa's left arm, beside the elf's scroll, between the elf's legs)
+  - `python3 gapfill.py stable.webp out.webp 1298,1212,1326,1362,190,50,c55 1306,1212,1322,1252,160,50,c50 1198,1205,1228,1364,190,50,c50 1438,1308,1458,1364,212,48,c-60 250,956,264,1034,135,80,lerp 249,1030,262,1046,125,80,lerp` (donkey legs, lamb legs, Joseph's staff)
+  - The red/cream strip at the stable's far-left edge is Santa's arm continuing past the clipped cast layer. It's intentional; don't clean it.
+- **Title** is "Santa, the Reindeer Are Missing!" everywhere: hero `h1`, ribbon, series card, footer, `<meta>` description, OG title, JSON-LD.
+- **Timing:** `#story` now opens after New Year's ("The presents are delivered. The New Year has rung in…").
+- **No hoofprints:** the `#hoof` symbol is now `#boot` (the search party's boot prints). `.hoof` became `.print` in HTML/CSS/JS. The trail marker is Santa (`santa-side.webp`, no flip). The story card says "Follow the trail ↓", and the elf boy says "Which way did they go?".
+- **Reindeer hiding spot** is a snowdrift: alt text, `#peek` label and the "Tap the snowdrift!" callout.
+- **`#series` card 1:** the book-one spread is full-bleed across the top of the card (5:4, 4:3 below 900px). The elf boy/girl cut-outs are gone.
+- **Hero CSS stack (#3)** not collapsed: these fixes didn't touch hero positioning, so it's still worth doing before the next real hero change.
 
 ## Private docs (gitignored, `docs/private/`)
 
