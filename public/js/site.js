@@ -90,7 +90,7 @@
     for(var i=0;i<secs.length;i++){var r=secs[i].getBoundingClientRect();if(r.top<=mid&&r.bottom>mid){hit=secs[i];break;}}
     if(!hit)return;
     var bg=hit.getAttribute('data-bg');
-    if(bg!==curBg){curBg=bg;document.body.style.backgroundColor=bg;nav.classList.toggle('on-ink',bg==='#2C1E2A'||bg==='#1F3A2F');}
+    if(bg!==curBg){curBg=bg;document.body.style.backgroundColor=bg;nav.classList.toggle('on-ink',bg==='#2C1E2A'||bg==='#1F3F8F');}
   }
 
   /* reveal safety: anything on screen and still hidden -> show */
@@ -210,9 +210,36 @@
         ctx.save();ctx.translate(b.x,b.y);ctx.rotate(b.a);ctx.fillStyle=b.c;ctx.globalAlpha=Math.max(0,Math.min(1,b.l/40));ctx.fillRect(-b.r/2,-b.r/2,b.r,b.r*.6);ctx.restore();
         if(b.l<=0||b.y>c.height+40)bits.splice(i,1);}
       if(!bits.length)ctx.clearRect(0,0,c.width,c.height);});
-    $$('[data-cur="big"]').forEach(function(el){el.addEventListener('click',function(e){var r=el.getBoundingClientRect();window.confettiBurst(r.left+r.width/2,r.top+r.height/2);});});
   })();
   $$('#trail .print').forEach(function(h){h.addEventListener('click',function(){h.classList.remove('pop');void h.getBoundingClientRect();h.classList.add('pop');});});
+  /* launch-list form: FormSubmit emails each signup to the owner's inbox (no backend). With JS it posts
+     via AJAX and thanks the visitor in place; without JS the plain form post still works. */
+  (function(){
+    var f=document.getElementById('signup');if(!f)return;
+    var msg=document.getElementById('su-msg'),btn=document.getElementById('joinbtn'),email=document.getElementById('su-email');
+    var to='mysuperherosanta@gmail.com';
+    function show(t,kind){msg.textContent=t;f.classList.remove('ok','err');if(kind)f.classList.add(kind);}
+    f.addEventListener('submit',function(e){
+      e.preventDefault();
+      if(f.elements._honey.value)return;
+      if(!email.value.trim()||!email.checkValidity()){show('Please enter a valid email address.','err');email.focus();return;}
+      btn.disabled=true;f.classList.add('busy');show('Adding you to the list…');
+      var data={};new FormData(f).forEach(function(v,k){data[k]=v;});
+      var hasMsg=!!(data.message&&data.message.trim());
+      if(hasMsg)data._subject='Superhero Santa: new message (and launch-list signup)';
+      fetch('https://formsubmit.co/ajax/'+to,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(data)})
+        .then(function(r){return r.json().then(function(j){if(!r.ok||String(j.success)!=='true')throw new Error(j.message||'failed');});})
+        .then(function(){
+          f.reset();f.classList.add('done');
+          show(hasMsg?'Thank you! Your message is on its way, and you’re on the launch list.':'You’re on the list! We’ll email you once, when Book One is ready.','ok');
+          if(window.confettiBurst){var r=btn.getBoundingClientRect();window.confettiBurst(r.left+r.width/2,r.top+r.height/2);}
+        })
+        .catch(function(){show('Sorry, that didn’t go through. Please try again in a moment.','err');})
+        .then(function(){btn.disabled=false;f.classList.remove('busy');});
+    });
+    // links to #join land on the email field
+    $$('a[href="#join"]').forEach(function(a){a.addEventListener('click',function(){setTimeout(function(){email.focus({preventScroll:true});},900);});});
+  })();
   var bs=document.getElementById('bigstar');
   if(bs)bs.addEventListener('click',function(){bs.classList.remove('spin');void bs.getBoundingClientRect();bs.classList.add('spin');if(window.confettiBurst){var r=bs.getBoundingClientRect();window.confettiBurst(r.left+r.width/2,r.top+r.height/2);}});
 

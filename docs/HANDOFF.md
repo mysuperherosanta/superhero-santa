@@ -8,7 +8,7 @@ _Last updated 2026-10-17. Picks up from a long Cowork design session; this repo 
 - **Repo:** local only. **Not pushed yet.** Plan: the friend (author) owns the GitHub repo and adds Nate as a collaborator; see `OWNER-TODO.md`.
 - **Hosting:** GitHub Pages via GitHub Actions (`.github/workflows/deploy.yml`; Settings → Pages → Source must be *GitHub Actions*). Base path comes from `actions/configure-pages`, so it switches automatically when the custom domain is added. Cost is the domain only (~$10–20/yr).
 - **Domain:** `superherosantaclaus.com`. DNS not pointed yet; registrar unknown. Set the custom domain in Settings → Pages only once DNS is pointed, then re-run the deploy workflow.
-- **Forms:** every "Join the list" button is a `mailto:hello@superherosantaclaus.com` link. There is no real signup form yet (see backlog #1).
+- **Forms:** the `#join` form (first name, email, optional message) sends to mysuperherosanta@gmail.com via FormSubmit (backlog #1). Every "Join" button scrolls to it. There is no hello@superherosantaclaus.com address; it was removed from the page and JSON-LD until a domain mailbox exists.
 
 ## Page map
 
@@ -58,13 +58,19 @@ Images were generated with Higgsfield (`gpt_image_2_5`) and background-removed t
 
 ## Backlog (in rough priority order)
 
-1. **Real email signup.** Replace the `mailto:` CTAs with an embedded MailerLite (or Kit) form; the owner picks the service and creates the account (see `OWNER-TODO.md`). Keep a mailto fallback in the footer.
+1. **Launch-list signup: done Oct 18 (simple version).**
+   - `#join` has a form (first name optional, email, message optional) that posts to [FormSubmit](https://formsubmit.co), which emails each signup to **mysuperherosanta@gmail.com**. No account, no backend, free. The inbox is the list.
+   - `site.js` submits via AJAX and thanks the visitor in place, with confetti. Without JS the plain POST still works and redirects back to `/#join`.
+   - Spam: a `_honey` honeypot. Every other "Join" button now scrolls to the form and focuses the email field.
+   - **One-time activation:** the first real submission makes FormSubmit email that Gmail an "Activate form" link. Click it, or nothing arrives.
+   - FormSubmit can then issue a random alias to replace the address in `home.html` and `site.js`, if you'd rather not expose it in the page source.
+   - **Later, if wanted:** a Worker + D1 store with CSV export (#8).
 2. **Hero fixes and story copy: done 2026-10-17** (see "Oct 17 changes" below). The owner still hasn't sent his own "few small things" list; ask for it.
 2c. **Character pages (later):** each search-party card should click through to its own page, with games/activities per character.
 3. **Collapse the hero CSS override stack** (see CSS debt above).
 4. **Performance:** add `width`/`height` to all `<img>` in `content/home.html`, `loading="lazy"` below the fold, `fetchpriority="high"` on the hero layers; consider `<picture>` with a smaller backdrop for phones. Target LCP < 2 s on mobile.
-5. **Share image:** make a dedicated 1200×630 `og:image` (currently points at the book cover JPG).
-6. **Analytics:** Cloudflare Web Analytics snippet (free, no cookie banner) + verify the domain in Google Search Console and submit `sitemap.xml`.
+5. **Share image:** done (`og-image.jpg`). Redo it with the title lettered in once the cover type is final.
+6. **Analytics + Search Console:** add the Cloudflare Web Analytics snippet (free, no cookie banner); verify the domain in Google Search Console and Bing Webmaster Tools and submit `sitemap.xml` once DNS is live. For GEO, the biggest remaining win is facts only the owner has: author name and bio, release date, page count, price and ISBN, on the page and in `jsonld.json`.
 7. **More pages** (normal App Router routes in TSX; first candidates: `/characters/[slug]` via `generateStaticParams`, linked from the search-party cards) from the SEO plan in `docs/private/` (parent guide, /for-churches, character pages, printables). Each gets its own canonical, JSON-LD and sitemap entry.
 8. **Later, optional: a small backend for leads/SEO tracking.** Recommended stack, all free tier: Cloudflare Workers (`/api/lead`), D1 (database), Workers cron (nightly Search Console pull), Cloudflare Access (login), and a Pages dashboard. Avoid Supabase free (projects pause after ~1 week idle). Keep the marketing site static either way.
 
@@ -94,6 +100,22 @@ Images were generated with Higgsfield (`gpt_image_2_5`) and background-removed t
 - **Trail pin:** the rail's slide spans the whole pinned distance (`duration:1`), the boot prints fade in during it, and the pin ends 60px after the last card lands. Before, the slide used only about a third of the pin, so the section held for a long stretch with nothing moving.
 - **Hero copy has no halos:** the white text-shadows and the cream haze behind the copy are gone. The paragraph and facts are now ink, and the kicker is a deeper cranberry (#861620). Each measures at least 4.5:1 against the bare sky at its worst point at 1440/1024/820/390; recheck if the backdrop changes.
 - **No dashed ring** around the Reindeer's snowdrift (`#peek::before` hidden). Keyboard focus still gets an outline.
+- **Oct 17 owner review (Plaud recordings, applied Oct 18):**
+  - **Vibrant colours (v38, end of `site.css`):** the beiges read as dull to the owner (colour-blind; likes rich roses, yellows, oranges, blues). The sections are now rose `#F49AB2` (story, join), tangerine `#F7A350` (trail), royal blue `#1F3F8F` (what's inside) and sunflower `#FAD25A` (series). The dark "reason" section stays dark; the owner likes it.
+  - **Kickers and text:** kickers are deep cranberry `#861620` on the bright grounds and gold on the dark ones. All text is 4.5:1 or better.
+  - **Hero art:** `hero-backdrop.webp` saturation +22%; the cast and stable layers get `saturate(1.14)`.
+  - **Copy:** "The presents have been delivered."; "The Superhero Santa series begins with a toddler bedtime reader … A full-edition picture book and a children's book are soon to follow."; footer "Picture books with Santa that point us to Christ."
+  - **Series picture** is framed from above Santa's head (`object-position 50% 30%`).
+  - **Owner loves:** the head elf travelling across the trail, and "every book ends where Christmas begins". Keep both.
+- **More city in the hero:** the backdrop is scaled to `1.95·cs` (desktop) / `2.25·cs + lift` (≤900px), up from 1.667, so the town rises above the cast. The kicker is ink with a red rule, and "Read about the book" has a frosted fill, because both now sit over deeper lavender or rooftops. Re-measured contrast is 4.76:1 or better at every width.
+- **SEO/GEO pass (Oct 18):**
+  - **Title:** "Superhero Santa: Christ-Centered Christmas Books for Toddlers". The description is ≤155 characters.
+  - **Share image:** a 1200×630 `og-image.jpg` with alt text, built from the hero layers.
+  - **Meta:** `og:site_name`/`locale`, `max-image-preview:large`, theme colour, `apple-icon.png`.
+  - **Structured data:** `logo.png` (512) on the Organization. `jsonld.json` is now Organization + WebSite + WebPage + BookSeries + Book, with descriptions, image, subjects and audience. It has no author, release date or ISBN yet; add them when known.
+  - **AI answer engines:** `public/llms.txt` summarises the series using only claims already on the page.
+  - **Headline:** has real spaces between its lines, so crawlers read "Santa, the Reindeer Are Missing!".
+  - **Images:** every `<img>` has `width`/`height`, below-the-fold images lazy-load, the stable and cast layers get `fetchpriority=high`, and the backdrop is preloaded. The hero's mini cover uses a 280px thumbnail (36 KB instead of 259 KB).
 - **Hero CSS stack (#3)** not collapsed: these fixes didn't touch hero positioning, so it's still worth doing before the next real hero change.
 
 ## Private docs (gitignored, `docs/private/`)

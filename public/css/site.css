@@ -1055,3 +1055,59 @@ footer h3{font-weight:500;font-style:italic;font-variation-settings:"opsz" 144,"
 /* without halos, the copy carries its own contrast against the sky (≥4.5:1 measured at 1440/1024/820/390) */
 .hero-copy>p,.hero-copy .sticker{color:var(--ink)}
 .hero-copy .label{color:#861620}
+
+/* ══ v38: vibrant. The owner asked for rich roses, yellows, oranges and blues instead of beiges
+   (Oct 17 review). Each section owns its colour; the dark "reason" section stays (they liked it).
+   Text colours are checked ≥4.5:1 on every ground. ══ */
+:root{--rose:#F49AB2;--tangerine:#F7A350;--sun:#FAD25A;--royal:#1F3F8F}
+#story{background:var(--rose)}
+#trail{background:var(--tangerine)}
+#fun{background:var(--royal)}
+#series{background:var(--sun)}
+#join{background:var(--rose)}
+/* kickers on the bright grounds: deep cranberry text with a red rule */
+.eyebrow{color:#861620}
+.eyebrow i{background:var(--red)}
+#fun .eyebrow,#reason .eyebrow{color:var(--gold-soft)}
+#fun .eyebrow i,#reason .eyebrow i{background:var(--gold-soft)}
+#story .lede,#trail .lede,#series .lede,#join .lede{color:var(--ink-soft)}
+/* trail: boot prints and dashes read on orange */
+#trail .print{fill:#861620}
+/* what's inside on royal blue: cream text, gold hairlines */
+.funcard{background:rgba(255,255,255,.06);border-color:rgba(226,196,138,.45)}
+.funcard:hover{background:rgba(255,255,255,.1)}
+/* join: stamp in ink and cranberry on rose */
+#join .stamp{color:var(--ink)}
+#join .mail{color:var(--ink-soft)}
+/* hero cast and stable: a touch richer to match the boosted backdrop */
+.stable3 img,.nativity img,.ch img{filter:saturate(1.14) drop-shadow(0 2px 3px rgba(60,40,60,.22))}
+/* series picture: frame from just above Santa's head (y≈150 of 1043) so it isn't cut off */
+.card .art img{object-position:50% 30%}
+@media (max-width:900px){.card .art img{object-position:50% 28%}}
+
+/* ══ launch-list form (#join) ══ */
+.signup{margin-top:30px;max-width:620px;display:grid;gap:16px;justify-items:start}
+.signup .fields{display:grid;grid-template-columns:1fr 1.35fr;gap:14px;width:100%}
+.signup label{display:grid;gap:7px;font:600 13px/1.2 var(--body);letter-spacing:.04em;color:var(--ink)}
+.signup label i{font-style:normal;font-weight:400;color:var(--ink-soft)}
+.signup input,.signup textarea{font:500 17px/1.2 var(--body);color:var(--ink);background:var(--paper);border:1px solid rgba(44,30,42,.35);border-radius:14px;padding:15px 16px;width:100%;
+  box-shadow:inset 0 1px 2px rgba(44,30,42,.08);transition:border-color .2s,box-shadow .2s}
+.signup input:focus,.signup textarea:focus{outline:none;border-color:var(--ink);box-shadow:0 0 0 3px rgba(134,22,32,.35)}
+.signup .hp{position:absolute;left:-9999px;width:1px;height:1px;opacity:0}
+.signup .btn[disabled]{opacity:.7;cursor:progress}
+.signup .msg{min-height:1.4em;font:600 15px/1.4 var(--body);color:var(--ink)}
+.signup.err .msg{color:#861620}
+.signup.ok .msg{font:500 20px/1.35 var(--display);font-variation-settings:"opsz" 30,"SOFT" 30}
+.signup.done .fields,.signup.done .btn{display:none}
+@media (max-width:600px){.signup .fields{grid-template-columns:1fr}.signup .btn{width:100%;justify-content:center}}
+/* more of the city (owner request): the town is scaled up so the rooftops, clock tower and domes rise above
+   the cast instead of hiding behind it. Desktop stays below the headline; phones fill the gap under the copy. */
+#hero{--bgh:max(calc(1.95*var(--cs)),calc(100vw/2.466))}
+@media (max-width:900px){#hero{--bgh:max(calc(2.25*var(--cs) + var(--lift)),calc(100vw/2.466))}}
+/* with the taller town, the kicker sits on deeper lavender: ink reads there, the red rule keeps the accent;
+   the outline button gets a frosted fill where it crosses rooftops */
+.hero-copy .label{color:var(--ink)}
+.hero-copy .label i{background:var(--red)}
+.hero-cta .btn.ghost{background:rgba(255,250,243,.78);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.signup .wide{grid-column:1/-1}
+.signup textarea{resize:vertical;min-height:110px;line-height:1.45}
