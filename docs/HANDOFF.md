@@ -8,7 +8,7 @@ _Last updated 2026-10-17. Picks up from a long Cowork design session; this repo 
 - **Repo:** local only. **Not pushed yet.** Plan: the friend (author) owns the GitHub repo and adds Nate as a collaborator; see `OWNER-TODO.md`.
 - **Hosting:** GitHub Pages via GitHub Actions (`.github/workflows/deploy.yml`; Settings → Pages → Source must be *GitHub Actions*). Base path comes from `actions/configure-pages`, so it switches automatically when the custom domain is added. Cost is the domain only (~$10–20/yr).
 - **Domain:** `superherosantaclaus.com`. DNS not pointed yet; registrar unknown. Set the custom domain in Settings → Pages only once DNS is pointed, then re-run the deploy workflow.
-- **Forms:** the `#join` form (first name, email, optional message) sends to mysuperherosanta@gmail.com via FormSubmit (backlog #1). Every "Join" button scrolls to it. There is no hello@superherosantaclaus.com address; it was removed from the page and JSON-LD until a domain mailbox exists.
+- **Forms:** the `#join` form (first name, email, optional message) sends to the Superhero Santa Gmail inbox via FormSubmit (backlog #1). Every "Join" button scrolls to it. There is no hello@superherosantaclaus.com address; it was removed from the page and JSON-LD until a domain mailbox exists.
 
 ## Page map
 
@@ -59,11 +59,11 @@ Images were generated with Higgsfield (`gpt_image_2_5`) and background-removed t
 ## Backlog (in rough priority order)
 
 1. **Launch-list signup: done Oct 18 (simple version).**
-   - `#join` has a form (first name optional, email, message optional) that posts to [FormSubmit](https://formsubmit.co), which emails each signup to **mysuperherosanta@gmail.com**. No account, no backend, free. The inbox is the list.
+   - `#join` has a form (first name optional, email, message optional) that posts to [FormSubmit](https://formsubmit.co), which emails each signup to the Superhero Santa Gmail inbox. No account, no backend, free. The inbox is the list.
    - `site.js` submits via AJAX and thanks the visitor in place, with confetti. Without JS the plain POST still works and redirects back to `/#join`.
    - Spam: a `_honey` honeypot. Every other "Join" button now scrolls to the form and focuses the email field.
    - **One-time activation:** the first real submission makes FormSubmit email that Gmail an "Activate form" link. Click it, or nothing arrives.
-   - FormSubmit can then issue a random alias to replace the address in `home.html` and `site.js`, if you'd rather not expose it in the page source.
+   - **Alias:** the address lives only in the form's `action` in `content/home.html`; `site.js` derives the AJAX URL from it. After activation, FormSubmit's email gives a random alias string. Replace the email in that `action` with the alias (`https://formsubmit.co/<alias>`) so the address isn't in the page source.
    - **Later, if wanted:** a Worker + D1 store with CSV export (#8).
 2. **Hero fixes and story copy: done 2026-10-17** (see "Oct 17 changes" below). The owner still hasn't sent his own "few small things" list; ask for it.
 2c. **Character pages (later):** each search-party card should click through to its own page, with games/activities per character.

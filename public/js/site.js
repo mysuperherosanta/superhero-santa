@@ -217,7 +217,6 @@
   (function(){
     var f=document.getElementById('signup');if(!f)return;
     var msg=document.getElementById('su-msg'),btn=document.getElementById('joinbtn'),email=document.getElementById('su-email');
-    var to='mysuperherosanta@gmail.com';
     function show(t,kind){msg.textContent=t;f.classList.remove('ok','err');if(kind)f.classList.add(kind);}
     f.addEventListener('submit',function(e){
       e.preventDefault();
@@ -227,7 +226,9 @@
       var data={};new FormData(f).forEach(function(v,k){data[k]=v;});
       var hasMsg=!!(data.message&&data.message.trim());
       if(hasMsg)data._subject='Superhero Santa: new message (and launch-list signup)';
-      fetch('https://formsubmit.co/ajax/'+to,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(data)})
+      // the destination lives only in the form's action (an email or, once activated, FormSubmit's alias)
+      var ajaxUrl=f.getAttribute('action').replace('formsubmit.co/','formsubmit.co/ajax/');
+      fetch(ajaxUrl,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify(data)})
         .then(function(r){return r.json().then(function(j){if(!r.ok||String(j.success)!=='true')throw new Error(j.message||'failed');});})
         .then(function(){
           f.reset();f.classList.add('done');
