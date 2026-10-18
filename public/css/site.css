@@ -1047,3 +1047,11 @@ footer h3{font-weight:500;font-style:italic;font-variation-settings:"opsz" 144,"
 .card.hero-card .tag{color:var(--gold-soft)}
 .hero-copy .label{color:var(--red)}
 @media (max-width:600px){#fun .grid{grid-template-columns:1fr}.funcard{display:grid;grid-template-columns:34px 1fr;column-gap:16px;row-gap:6px;align-items:start;padding:20px}.funcard svg{grid-row:span 2;width:34px;height:34px}}
+/* no dashed "tap here" ring around the Reindeer's snowdrift (keyboard focus still gets an outline) */
+#peek::before{display:none}
+/* hero copy sits on the sky without white halos or a cream haze behind it */
+.hero-copy h1,.hero-copy>p{text-shadow:none}
+.hero-copy::before{display:none}
+/* without halos, the copy carries its own contrast against the sky (≥4.5:1 measured at 1440/1024/820/390) */
+.hero-copy>p,.hero-copy .sticker{color:var(--ink)}
+.hero-copy .label{color:#861620}

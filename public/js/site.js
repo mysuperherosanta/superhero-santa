@@ -170,10 +170,11 @@
     var rail=document.getElementById('rail');
     if(!rail)return;
     var pathEl=document.querySelector('#trail .path');
-    var tl=gsap.timeline({scrollTrigger:{trigger:'#trail',start:'top top',end:function(){return '+='+(rail.scrollWidth-window.innerWidth+400);},pin:true,scrub:.6,anticipatePin:1,invalidateOnRefresh:true}});
-    tl.to(rail,{x:function(){return -(rail.scrollWidth-window.innerWidth);},ease:'none'},0)
-      .fromTo('#marker',{x:0},{x:function(){return pathEl.getBoundingClientRect().width;},ease:'none'},0)
-      .to('#trail .print',{opacity:1,stagger:.08,ease:'none',duration:.9},0.05);
+    // the rail's slide spans the whole pin (prints fade in within it), so the section releases as soon as the last card lands
+    var tl=gsap.timeline({scrollTrigger:{trigger:'#trail',start:'top top',end:function(){return '+='+(rail.scrollWidth-window.innerWidth+60);},pin:true,scrub:.6,anticipatePin:1,invalidateOnRefresh:true}});
+    tl.to(rail,{x:function(){return -(rail.scrollWidth-window.innerWidth);},ease:'none',duration:1},0)
+      .fromTo('#marker',{x:0},{x:function(){return pathEl.getBoundingClientRect().width;},ease:'none',duration:1},0)
+      .to('#trail .print',{opacity:1,stagger:.08,ease:'none',duration:.3},0.05);
     return tl;
   }
   ScrollTrigger.matchMedia({

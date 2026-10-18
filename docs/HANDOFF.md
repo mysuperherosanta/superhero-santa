@@ -91,6 +91,9 @@ Images were generated with Higgsfield (`gpt_image_2_5`) and background-removed t
   - **Sections:** the peach sections are now champagne (#EED3B6) and "What's inside" is deep evergreen (#1F3A2F). The `data-bg` values in `home.html` match, and the nav switches to light text over evergreen.
   - **Components:** hero stickers became one quiet line of facts; buttons are cranberry with a lit top edge and offset shadow; the reason star is a gold gradient (`#goldstar`); the series shows Book One large with the two follow-ons stacked beside it.
 - **Next.js dev "Issue" badge:** the hydration warning is silenced with `suppressHydrationWarning` on `<body>` and the content div in `page.tsx`, because `site.js` changes both before React hydrates. That's intended.
+- **Trail pin:** the rail's slide spans the whole pinned distance (`duration:1`), the boot prints fade in during it, and the pin ends 60px after the last card lands. Before, the slide used only about a third of the pin, so the section held for a long stretch with nothing moving.
+- **Hero copy has no halos:** the white text-shadows and the cream haze behind the copy are gone. The paragraph and facts are now ink, and the kicker is a deeper cranberry (#861620). Each measures at least 4.5:1 against the bare sky at its worst point at 1440/1024/820/390; recheck if the backdrop changes.
+- **No dashed ring** around the Reindeer's snowdrift (`#peek::before` hidden). Keyboard focus still gets an outline.
 - **Hero CSS stack (#3)** not collapsed: these fixes didn't touch hero positioning, so it's still worth doing before the next real hero change.
 
 ## Private docs (gitignored, `docs/private/`)
