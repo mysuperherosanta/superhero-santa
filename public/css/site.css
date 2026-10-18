@@ -291,7 +291,7 @@ footer .bottom{margin-top:60px;padding-top:22px;border-top:1px solid rgba(251,23
 /* ── hidden-object hunt ── */
 .ch-deer{transition:none}
 .ch-deer .fig{position:relative}
-.ch-deer:not(.found){animation:peek 3.2s ease-in-out infinite}
+.ch-deer:not(.found) .fig{animation:peek 3.2s ease-in-out infinite}
 @keyframes peek{0%,88%,100%{transform:translateY(30%)}92%{transform:translateY(24%) rotate(-3deg)}96%{transform:translateY(27%) rotate(3deg)}}
 .ch-deer .q{position:absolute;left:58%;bottom:calc(100% - 3vh);width:36px;height:36px;background:#fff;border-radius:50%;display:grid;place-items:center;font:900 20px/1 var(--display);color:var(--red);box-shadow:0 8px 16px -8px rgba(44,30,42,.6);animation:qbob 1.8s ease-in-out infinite;pointer-events:none}
 @keyframes qbob{50%{transform:translateY(-8px) rotate(8deg)}}
@@ -844,7 +844,8 @@ footer .bottom{margin-top:60px;padding-top:22px;border-top:1px solid rgba(251,23
 .nativity img{filter:drop-shadow(0 2px 3px rgba(60,40,60,.22))}
 .nativity .shadow,.nativity .drift{display:none}
 .ch{bottom:2vh;height:var(--cs);--h:var(--cs);translate:0 0;transform:none}
-.ch .fig{transform:none!important;rotate:0deg}
+.ch .fig{rotate:0deg}
+.ch:not(.ch-deer) .fig{transform:none!important}
 .ch img{filter:drop-shadow(0 2px 3px rgba(60,40,60,.22));animation:none}
 .ch::before,.ch::after{display:none}
 .ch-boy{left:calc(var(--cx) - .2846*var(--cs));z-index:7;display:block}
@@ -885,7 +886,7 @@ footer .bottom{margin-top:60px;padding-top:22px;border-top:1px solid rgba(251,23
 .hidey,#peek{left:calc(var(--cx) + 1.7505*var(--cs));width:calc(var(--cs)*0.4596)}
 #peek{height:calc(var(--cs)*0.302)}
 @keyframes peek2{0%,88%,100%{transform:translateY(19%)}92%{transform:translateY(14%) rotate(-3deg)}96%{transform:translateY(17%) rotate(3deg)}}
-.ch-deer:not(.found){animation-name:peek2}
+.ch-deer:not(.found) .fig{animation-name:peek2}
 @media (min-width:901px){#gstar{left:calc(var(--cx) + 1.6511*var(--cs));top:auto;bottom:calc(2vh + 0.8023*var(--cs))}
 #findme{left:calc(var(--cx) + 1.95*var(--cs));right:auto;top:auto;bottom:calc(2vh + .42*var(--cs));transform:translateX(-62%)}}
 @media (max-width:900px){
@@ -909,3 +910,28 @@ background-image:linear-gradient(to bottom,#d9d2ee 0,#aaa3d6 calc(55% - 0.5*var(
 background-size:100% 100%,auto var(--bgh);background-position:0 0,center bottom;background-repeat:no-repeat;
 background-color:#8b87bf}
 @media (max-width:900px){#hero{--bgh:max(calc(1.667*var(--cs) + var(--lift)),calc(100vw/2.466))}}
+
+/* ══ v36: one ground. Every scene layer shares one parallax depth (data-depth in home.html) and stands on one
+   continuous snowbank, so the boy, the girl and the Reindeer never drift off the cast. On desktop the scene
+   lifts just enough for the feet to clear the bottom controls (phones already lift by 58px). ══ */
+@media (min-width:901px){:root{--lift:max(0px,calc(1vh + 50px - .078*var(--cs)))}
+#gstar{bottom:calc(2vh + var(--lift) + .8023*var(--cs))}
+#findme{bottom:calc(2vh + var(--lift) + .42*var(--cs))}}
+.stable3,.nativity,.ch{bottom:calc(2vh + var(--lift))}
+.hidey{bottom:calc(1.5vh + var(--lift))}
+#peek{bottom:calc(1.5vh + var(--lift));z-index:10}
+.bank{position:absolute;left:0;right:0;bottom:0;height:calc(2vh + var(--lift) + .088*var(--cs));z-index:9;pointer-events:none}
+.bank svg{display:block;width:100%;height:100%;filter:drop-shadow(0 -2px 5px rgba(90,60,100,.14))}
+/* the snowdrift sits on the bank, its base fading into it */
+.hidey{z-index:10}
+.hidey svg{-webkit-mask-image:linear-gradient(#000 62%,transparent 96%);mask-image:linear-gradient(#000 62%,transparent 96%)}
+#peek{z-index:11}
+/* "Tap the snowdrift!": the arrow sits over the drift's centre (cx + 1.98cs) at every width */
+#findme{left:auto;right:calc(100% - var(--cx) - 1.98*var(--cs) - 13px);top:auto;bottom:calc(2vh + var(--lift) + max(.3*var(--cs),.5*var(--cs) - 44px));transform:none;align-items:flex-end}
+/* label clears the girl's head (~.49cs) where there's room; the "?" rides just above the Reindeer's antlers */
+.ch-deer .q{bottom:58%;left:44%}
+/* speech bubbles sit just above each head (head tops measured from the artwork, as % of the --cs-tall box) */
+.ch .say{bottom:calc(var(--head,100%) + 12px)}
+.ch-santa{--head:59.4%}.ch-elf{--head:57.9%}.ch-mrs{--head:56.1%}.ch-boy{--head:50.4%}.ch-girl{--head:49.3%}.ch-deer{--head:55.6%}
+/* a talking character comes forward so its bubble isn't hidden by the callout or the hunt items */
+.ch.talk{z-index:12}

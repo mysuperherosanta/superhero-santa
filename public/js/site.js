@@ -58,7 +58,7 @@
       $$('.ch').forEach(function(ch,i){setTimeout(function(){say(ch,CHEER[i%CHEER.length]);},i*260);});}}
   function findDeer(){if(found.deer)return;
     deerEl.classList.add('found');document.getElementById('hero').classList.add('found-deer');if(peek)peek.remove();
-    if(window.gsap&&!rm){gsap.to(deerEl,{y:'-22%',duration:.7,ease:'back.out(2.2)',onComplete:function(){say(deerEl);}});}else{deerEl.style.transform='none';say(deerEl);}
+    if(window.gsap&&!rm){gsap.to(deerEl,{yPercent:-22,duration:.7,ease:'back.out(2.2)',onComplete:function(){say(deerEl);}});}else{deerEl.style.transform='none';say(deerEl);}
     score('deer','You found the Reindeer!');}
   if(peek)peek.addEventListener('click',findDeer);
   if(deerEl)deerEl.addEventListener('click',function(){if(!found.deer)findDeer();});
@@ -141,8 +141,6 @@
     var layers=$$('#hero [data-depth]').map(function(el){return {el:el,d:parseFloat(el.getAttribute('data-depth')),x:gsap.quickTo(el,'x',{duration:.8,ease:'power3'}),y:gsap.quickTo(el,'y',{duration:.8,ease:'power3'})};});
     document.getElementById('hero').addEventListener('pointermove',function(e){var r=e.currentTarget.getBoundingClientRect();var nx=(e.clientX-r.left)/r.width-.5,ny=(e.clientY-r.top)/r.height-.5;layers.forEach(function(l){l.x(nx*l.d*r.width*-1);l.y(ny*l.d*r.height*-.6);});},{passive:true});
   }
-  /* scroll parallax: scene sinks slightly */
-  gsap.to('.ch, #deer',{y:40,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:true}});
   gsap.to('.hero-copy',{y:-40,opacity:.4,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:true}});
 
   /* falling snow (canvas) */
