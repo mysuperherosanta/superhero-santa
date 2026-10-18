@@ -107,7 +107,7 @@ Images were generated with Higgsfield (`gpt_image_2_5`) and background-removed t
   - **Copy:** "The presents have been delivered."; "The Superhero Santa series begins with a toddler bedtime reader … A full-edition picture book and a children's book are soon to follow."; footer "Picture books with Santa that point us to Christ."
   - **Series picture** is framed from above Santa's head (`object-position 50% 30%`).
   - **Owner loves:** the head elf travelling across the trail, and "every book ends where Christmas begins". Keep both.
-- **More city in the hero:** the backdrop is scaled to `1.95·cs` (desktop) / `2.25·cs + lift` (≤900px), up from 1.667, so the town rises above the cast. The kicker is ink with a red rule, and "Read about the book" has a frosted fill, because both now sit over deeper lavender or rooftops. Re-measured contrast is 4.76:1 or better at every width.
+- **More city in the hero:** the backdrop is scaled to `2.2·cs`, capped by viewport height so the skyline never runs behind the copy (`100vh`; `92vh` on short ≤1280px screens; `112vh` from 1700px), and to `2.5·cs + lift` at ≤900px. The caps come from a contrast sweep at ten desktop sizes. Re-run it if the copy or backdrop changes. The kicker is ink with a red rule, and "Read about the book" has a frosted fill, because both now sit over deeper lavender or rooftops. Re-measured contrast is 4.76:1 or better at every width.
 - **SEO/GEO pass (Oct 18):**
   - **Title:** "Superhero Santa: Christ-Centered Christmas Books for Toddlers". The description is ≤155 characters.
   - **Share image:** a 1200×630 `og-image.jpg` with alt text, built from the hero layers.

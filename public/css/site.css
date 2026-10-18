@@ -1102,8 +1102,12 @@ footer h3{font-weight:500;font-style:italic;font-variation-settings:"opsz" 144,"
 @media (max-width:600px){.signup .fields{grid-template-columns:1fr}.signup .btn{width:100%;justify-content:center}}
 /* more of the city (owner request): the town is scaled up so the rooftops, clock tower and domes rise above
    the cast instead of hiding behind it. Desktop stays below the headline; phones fill the gap under the copy. */
-#hero{--bgh:max(calc(1.95*var(--cs)),calc(100vw/2.466))}
-@media (max-width:900px){#hero{--bgh:max(calc(2.25*var(--cs) + var(--lift)),calc(100vw/2.466))}}
+/* capped by viewport height so the domes and spires never rise behind the hero copy (contrast-swept at ten
+   desktop sizes): 100vh in general, 92vh on short 1280-wide screens (1280×720 fails at 100vh), 112vh from 1700px */
+#hero{--bgh:max(min(calc(2.2*var(--cs)),100vh),calc(100vw/2.466))}
+@media (min-width:901px) and (max-width:1280px) and (max-height:760px){#hero{--bgh:max(min(calc(2.2*var(--cs)),92vh),calc(100vw/2.466))}}
+@media (min-width:1700px){#hero{--bgh:max(min(calc(2.2*var(--cs)),112vh),calc(100vw/2.466))}}
+@media (max-width:900px){#hero{--bgh:max(calc(2.5*var(--cs) + var(--lift)),calc(100vw/2.466))}}
 /* with the taller town, the kicker sits on deeper lavender: ink reads there, the red rule keeps the accent;
    the outline button gets a frosted fill where it crosses rooftops */
 .hero-copy .label{color:var(--ink)}
