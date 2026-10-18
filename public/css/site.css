@@ -893,7 +893,9 @@ footer .bottom{margin-top:60px;padding-top:22px;border-top:1px solid rgba(251,23
 :root{--cs:min(44.8vw,52vh);--cx:calc(50vw - 1.0622*var(--cs));--lift:58px}
 .stable3,.nativity,.ch{bottom:calc(2vh + var(--lift))}
 .hidey,#peek{bottom:calc(1.5vh + var(--lift))}
-#cane{left:24%;bottom:calc(1.5vh + 8px)}
+/* cane stands in the snow just left of the boy (his figure starts at cx + .079cs); it stays above him so it's clickable, and its base fades into the bank */
+#cane{left:calc(var(--cx) - .04*var(--cs));bottom:calc(2vh + var(--lift) + .05*var(--cs));width:calc(.11*var(--cs));height:calc(.24*var(--cs));z-index:10}
+#cane svg{-webkit-mask-image:linear-gradient(#000 82%,transparent 97%);mask-image:linear-gradient(#000 82%,transparent 97%)}
 #gstar{left:20%;top:auto;bottom:calc(2vh + var(--lift) + 1.05*var(--cs))}
 /* hero is copy + scene tall instead of a full viewport, so tall phones/tablets don't get a band of empty sky */
 #hero{height:auto;min-height:0;padding-bottom:calc(var(--cs) + var(--lift) + 2vh + 7vh)}
