@@ -935,3 +935,5 @@ background-color:#8b87bf}
 .ch-santa{--head:59.4%}.ch-elf{--head:57.9%}.ch-mrs{--head:56.1%}.ch-boy{--head:50.4%}.ch-girl{--head:49.3%}.ch-deer{--head:55.6%}
 /* a talking character comes forward so its bubble isn't hidden by the callout or the hunt items */
 .ch.talk{z-index:12}
+/* found Reindeer stands in the snowdrift: its legs end inside the drift, so it stays behind it even while talking */
+.ch-deer.found,.ch-deer.talk{z-index:9}

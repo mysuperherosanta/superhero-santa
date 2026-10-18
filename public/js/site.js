@@ -58,7 +58,7 @@
       $$('.ch').forEach(function(ch,i){setTimeout(function(){say(ch,CHEER[i%CHEER.length]);},i*260);});}}
   function findDeer(){if(found.deer)return;
     deerEl.classList.add('found');document.getElementById('hero').classList.add('found-deer');if(peek)peek.remove();
-    if(window.gsap&&!rm){gsap.to(deerEl,{yPercent:-22,duration:.7,ease:'back.out(2.2)',onComplete:function(){say(deerEl);}});}else{deerEl.style.transform='none';say(deerEl);}
+    if(window.gsap&&!rm){gsap.to(deerEl,{yPercent:-4,duration:.7,ease:'back.out(2.2)',onComplete:function(){say(deerEl);}});}else{deerEl.style.transform='none';say(deerEl);}
     score('deer','You found the Reindeer!');}
   if(peek)peek.addEventListener('click',findDeer);
   if(deerEl)deerEl.addEventListener('click',function(){if(!found.deer)findDeer();});
