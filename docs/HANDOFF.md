@@ -22,7 +22,7 @@ _Last updated 2026-10-17. Picks up from a long Cowork design session; this repo 
 | `#series` | Three series cards; card 1 (Book One) has the book-one spread full-bleed across its top |
 | `#join` | Launch-list CTA |
 
-**Interactions (`public/js/site.js`):** preloader; custom cursor (fine pointers only); Lenis smooth scroll; parallax via `data-depth`; tap a character → speech bubble from `data-say`; hidden-object hunt (candy cane `#cane`, star `#gstar`, peeking Reindeer `#deer`/`#peek`) with counter `#counter` and confetti `#conf`; sound toggle `#sfx`; `prefers-reduced-motion` respected.
+**Interactions (`public/js/site.js`):** preloader; Lenis smooth scroll; parallax via `data-depth`; tap a character → speech bubble from `data-say`; hidden-object hunt (candy cane `#cane`, star `#gstar`, peeking Reindeer `#deer`/`#peek`) with counter `#counter` and confetti `#conf`; sound toggle `#sfx`; `prefers-reduced-motion` respected.
 
 ## How the hero works (read before touching it)
 
@@ -78,6 +78,10 @@ Images were generated with Higgsfield (`gpt_image_2_5`) and background-removed t
 - **No hoofprints:** the `#hoof` symbol is now `#boot` (the search party's boot prints). `.hoof` became `.print` in HTML/CSS/JS. The trail marker is Santa (`santa-side.webp`, no flip). The story card says "Follow the trail ↓", and the elf boy says "Which way did they go?".
 - **Reindeer hiding spot** is a snowdrift: alt text, `#peek` label and the "Tap the snowdrift!" callout.
 - **`#series` card 1:** the book-one spread is full-bleed across the top of the card (5:4, 4:3 below 900px). The elf boy/girl cut-outs are gone.
+- **Search-party card art** (`*-front.webp`, `*-side.webp`, `reindeer*.webp`): pure-white gaps keyed out with `whitekey.py` (the gaps are 255-white; fur and aprons are off-white, so a near-white key with a 40px minimum blob is safe), ground shadows removed with `feet.py` (bottom 6% of the canvas, 10% for `santa-front` and both reindeer), and Mrs. Claus's punched-through hem rebuilt with `hemfill.py` + `hemmirror.py` (front mirrored about x=171; side rounded off where the canvas crops it). The pink halo on the side Reindeer's nose is the rendered glow; leave it.
+- **Custom cursor removed** (the red dot that followed the mouse and grew into "Join" over CTAs). `data-cur="big"` stays: the confetti on CTAs uses it.
+- **Hero ≤900px:** `.hero-copy` is in normal flow, and `#hero` is copy + `--cs` + lift tall instead of a full viewport, so tall phones and tablets don't get a band of empty sky. The candy cane is on the `--cs` grid. `.hero-copy` is centred with margins rather than `translateX(-50%)`, because `site.js` scrubs a transform on it and GSAP's inline transform used to wipe out the centring when a desktop-loaded page was narrowed. `main{overflow-x:clip}` stops the snowdrift and the parked series-card fan from widening the page.
+- **Short desktop screens** (`min-width:901px` and `max-height:700px`): the "Read about the book" button is hidden; it landed on the cast's heads.
 - **Hero CSS stack (#3)** not collapsed: these fixes didn't touch hero positioning, so it's still worth doing before the next real hero change.
 
 ## Private docs (gitignored, `docs/private/`)
