@@ -12,7 +12,8 @@ export default function Home() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonld }} />
-      <div style={{ display: "contents" }} dangerouslySetInnerHTML={{ __html: html }} />
+      {/* site.js edits this markup before React hydrates (stars, sparkles, ribbon loop, preloader) */}
+      <div style={{ display: "contents" }} suppressHydrationWarning dangerouslySetInnerHTML={{ __html: html }} />
     </>
   );
 }

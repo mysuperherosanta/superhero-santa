@@ -90,7 +90,7 @@
     for(var i=0;i<secs.length;i++){var r=secs[i].getBoundingClientRect();if(r.top<=mid&&r.bottom>mid){hit=secs[i];break;}}
     if(!hit)return;
     var bg=hit.getAttribute('data-bg');
-    if(bg!==curBg){curBg=bg;document.body.style.backgroundColor=bg;nav.classList.toggle('on-ink',bg==='#2C1E2A');}
+    if(bg!==curBg){curBg=bg;document.body.style.backgroundColor=bg;nav.classList.toggle('on-ink',bg==='#2C1E2A'||bg==='#1F3A2F');}
   }
 
   /* reveal safety: anything on screen and still hidden -> show */

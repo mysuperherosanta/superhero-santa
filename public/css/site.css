@@ -943,3 +943,107 @@ background-color:#8b87bf}
 .ch-deer.found,.ch-deer.talk{z-index:9}
 /* the cane's white stripes need an edge to read against the snowbank */
 #cane svg{filter:drop-shadow(0 0 1px rgba(90,40,60,.55)) drop-shadow(0 2px 2px rgba(90,40,60,.25))}
+
+/* ══ v37: luxury pass. Same world, finer craft: a lighter variable Fraunces with italic accents, one gold
+   accent for kickers, rules and stars, hairline borders, offset shadows, and calmer hover motion. ══ */
+:root{--gold:#B88A3E;--gold-soft:#E2C48A;--evergreen:#1F3A2F;--champagne:#EED3B6;
+  --shadow-sm:0 2px 4px rgba(44,30,42,.06),0 10px 24px -14px rgba(44,30,42,.35);
+  --shadow-lg:0 4px 10px rgba(44,30,42,.05),0 34px 60px -34px rgba(44,30,42,.5)}
+h1,h2,h3{font-weight:600;font-variation-settings:"opsz" 144,"SOFT" 30;line-height:1.02;letter-spacing:-.022em}
+h1 em,h2 em,h3 em,.quote em{font-weight:500;font-style:italic;font-variation-settings:"opsz" 144,"SOFT" 60}
+.brand .word{font-weight:650;font-variation-settings:"opsz" 30,"SOFT" 30;letter-spacing:-.01em}
+.lede{line-height:1.65}
+
+/* kickers: one quiet gold system instead of a red rule on every section */
+.label{font:600 11px/1 var(--body);letter-spacing:.3em}
+.eyebrow{color:var(--gold);margin-bottom:20px}
+.eyebrow i{width:28px;height:1px}
+#reason .eyebrow,footer .label{color:var(--gold-soft)}
+.hero-copy .label{color:var(--gold)}
+
+/* buttons: deep cranberry with a lit top edge and a real offset shadow */
+.btn{background:linear-gradient(180deg,#C02A36 0%,#A51C29 100%);font-weight:700;letter-spacing:.03em;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 1px 2px rgba(120,16,26,.3),0 12px 22px -12px rgba(150,20,32,.65);
+  transition:transform .35s var(--ease),box-shadow .35s var(--ease),filter .35s var(--ease)}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.05);box-shadow:inset 0 1px 0 rgba(255,255,255,.25),0 2px 4px rgba(120,16,26,.3),0 18px 30px -14px rgba(150,20,32,.7)}
+.btn:active{transform:translateY(0)}
+.btn.ghost{background:transparent;box-shadow:inset 0 0 0 1px rgba(44,30,42,.55)}
+.btn.ghost:hover{background:rgba(255,250,243,.5);box-shadow:inset 0 0 0 1px var(--ink),var(--shadow-sm);filter:none}
+.btn.cream{background:var(--paper);box-shadow:var(--shadow-sm)}
+
+/* hero facts: one refined line instead of three tilted stickers */
+.stickers{gap:6px 22px;margin-top:4px}
+.sticker,.sticker.red,.sticker.cream,.sticker:nth-child(even){background:none;box-shadow:none;transform:none;padding:0;color:var(--ink-soft);
+  font:600 13px/1.2 var(--body);letter-spacing:.06em;font-variation-settings:normal}
+.sticker svg{width:11px;height:11px;fill:var(--gold)}
+.stickers .sticker:hover{transform:none}
+.hero-copy h1{letter-spacing:-.028em;line-height:1}
+
+/* hero game details */
+.findme b{font-weight:650;font-variation-settings:"opsz" 30,"SOFT" 30;letter-spacing:.005em}
+.counter{font-weight:650;font-variation-settings:"opsz" 30,"SOFT" 30;box-shadow:var(--shadow-sm)}
+.sfx{box-shadow:var(--shadow-sm)}
+.ch .say{font-weight:650;font-variation-settings:"opsz" 30,"SOFT" 30;box-shadow:0 2px 6px rgba(44,30,42,.08),0 16px 30px -16px rgba(44,30,42,.45)}
+.ch-deer .q{font-weight:650}
+
+/* ribbon: lighter type, gold stars */
+.ribbon{font-weight:600;font-variation-settings:"opsz" 30,"SOFT" 30;letter-spacing:.14em;font-size:clamp(14px,1.3vw,18px);padding:15px 0;
+  background:linear-gradient(180deg,#B32432,#9E1A27);box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -1px 0 rgba(0,0,0,.12)}
+.ribbon svg{fill:var(--gold-soft)}
+
+/* story */
+.deer-card{box-shadow:var(--shadow-lg);border:1px solid rgba(44,30,42,.06)}
+.deer-card .cap b{font-weight:600;font-variation-settings:"opsz" 30,"SOFT" 30}
+
+/* trail: champagne instead of loud peach */
+#trail{background:var(--champagne)}
+.frame{box-shadow:var(--shadow-lg)}
+.frame .name b{font-weight:600;font-variation-settings:"opsz" 30,"SOFT" 30}
+.frame.f-end{background:linear-gradient(180deg,#B32432,#951826)}
+
+/* what's inside: deep evergreen with hairline gold panels */
+#fun{background:var(--evergreen);color:var(--cream)}
+#fun .h2{color:var(--cream)}
+#fun .eyebrow{color:var(--gold-soft)}
+#fun .blob{display:none}
+.funcard{background:rgba(255,250,240,.03);border:1px solid rgba(226,196,138,.28);border-radius:16px;padding:28px 26px;gap:14px}
+.funcard:hover{transform:translateY(-3px);background:rgba(255,250,240,.06);border-color:rgba(226,196,138,.5)}
+.funcard svg{width:40px;height:40px;stroke:var(--gold-soft);stroke-width:1.6}
+.funcard svg circle{fill:var(--gold-soft)}
+.funcard b{font-weight:600;font-variation-settings:"opsz" 30,"SOFT" 30;font-size:21px;color:var(--cream)}
+.funcard span{color:rgba(251,232,210,.78);line-height:1.6}
+
+/* the reason: a gold star */
+#bigstar{fill:url(#goldstar)}
+#reason .star-wrap circle[stroke]{stroke:var(--gold-soft)}
+#reason .quote{font-weight:500;font-style:normal;font-variation-settings:"opsz" 60,"SOFT" 30;line-height:1.35}
+#reason .quote em{color:var(--gold-soft)}
+
+/* series: Book One leads, the two follow-ons stack beside it (no empty cards) */
+#series .stack{grid-template-columns:1.15fr 1fr;grid-template-rows:auto auto;align-items:stretch}
+#series .card.hero-card{grid-row:span 2}
+.card{min-height:0;border-radius:20px;box-shadow:var(--shadow-lg);border:1px solid rgba(44,30,42,.07)}
+.card:hover{transform:translateY(-4px);box-shadow:0 6px 14px rgba(44,30,42,.06),0 40px 70px -36px rgba(44,30,42,.55)}
+.card .num{font-weight:600;font-variation-settings:"opsz" 144,"SOFT" 30;font-size:48px;color:var(--red)}
+.card.hero-card .num{color:var(--gold-soft)}
+.card .tag{color:var(--gold);font-weight:600}
+.card.hero-card .tag{color:var(--gold-soft)}
+.card .art{border-radius:20px 20px 0 0}
+@media (max-width:900px){#series .stack{grid-template-columns:1fr}#series .card.hero-card{grid-row:auto}}
+
+/* join */
+#join{background:var(--champagne)}
+#join .stamp{color:var(--gold)}
+#join .stamp use{color:var(--ink)}
+
+/* footer */
+footer h3{font-weight:500;font-style:italic;font-variation-settings:"opsz" 144,"SOFT" 60}
+/* gold for text on light grounds is the deeper ink-gold (≥4.5:1); the bright golds stay for rules, fills and dark grounds */
+:root{--gold-ink:#7A5518}
+.eyebrow,.card .tag{color:var(--gold-ink)}
+.eyebrow i{background:var(--gold)}
+#fun .eyebrow,#reason .eyebrow{color:var(--gold-soft)}
+#fun .eyebrow i,#reason .eyebrow i{background:var(--gold-soft)}
+.card.hero-card .tag{color:var(--gold-soft)}
+.hero-copy .label{color:var(--red)}
+@media (max-width:600px){#fun .grid{grid-template-columns:1fr}.funcard{display:grid;grid-template-columns:34px 1fr;column-gap:16px;row-gap:6px;align-items:start;padding:20px}.funcard svg{grid-row:span 2;width:34px;height:34px}}

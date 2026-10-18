@@ -26,11 +26,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link
           rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,900,100&family=Nunito:wght@400;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..900,0..100;1,9..144,400..900,0..100&family=Nunito:wght@400;600;700&display=swap"
         />
         <link rel="stylesheet" href={asset("/css/site.css")} />
       </head>
-      <body>
+      {/* site.js sets the body background as sections scroll by */}
+      <body suppressHydrationWarning>
         {children}
         {/* Self-hosted (public/vendor, pinned: GSAP 3.12.5, Lenis 1.1.18). defer keeps order. */}
         <script defer src={asset("/vendor/gsap.min.js")} />
