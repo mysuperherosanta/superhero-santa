@@ -37,6 +37,9 @@ export const metadata: Metadata = {
   formatDetection: { telephone: false, address: false, email: false },
 };
 
+// where the hero shows at most ~36% of the backdrop's width, so hero-backdrop-phone.webp (centre crop) looks identical
+const PHONE_BACKDROP = "(max-width: 900px) and (max-aspect-ratio: 1/1)";
+
 export const viewport: Viewport = { width: "device-width", initialScale: 1, themeColor: "#B4202B" };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -44,15 +47,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     // site.js adds classes (fx / rm / no-js) to <html> at runtime
     <html lang="en" suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..900,0..100;1,9..144,400..900,0..100&family=Nunito:wght@400;600;700&display=swap"
-        />
+        {/* fonts are self-hosted subsets (public/fonts, @font-face at the top of site.css) */}
         <link rel="stylesheet" href={asset("/css/site.css")} />
-        {/* the hero backdrop is a CSS background, so the browser can't discover it early on its own */}
-        <link rel="preload" as="image" href={asset("/assets/img/hero-backdrop.webp")} fetchPriority="high" />
+        {/* the hero backdrop is a CSS background, so the browser can't discover it early on its own.
+            Portrait phones and tablets get a centre crop (same media query as the end of site.css). */}
+        <link rel="preload" as="image" href={asset("/assets/img/hero-backdrop-phone.webp")} media={PHONE_BACKDROP} fetchPriority="high" />
+        <link rel="preload" as="image" href={asset("/assets/img/hero-backdrop.webp")} media={`not all and ${PHONE_BACKDROP}`} fetchPriority="high" />
       </head>
       {/* site.js sets the body background as sections scroll by */}
       <body suppressHydrationWarning>
