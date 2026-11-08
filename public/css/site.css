@@ -64,8 +64,6 @@ nav .btn{padding:13px 20px;font-size:13px}
 
 /* mark */
 .mark{display:block}
-.mark .sh{fill:none;stroke:currentColor;stroke-width:3}
-.mark .st{fill:var(--red)}
 
 /* ══ HERO ════════════════════════════════════════════════════════════════════════════════════════
    One measured composition. The cast + stable were rendered as a single image (canvas 3073×1447,
@@ -73,8 +71,8 @@ nav .btn{padding:13px 20px;font-size:13px}
      --cs  canvas height in px      --cx  canvas left edge      --lift  how far the ground sits above 2vh
    Every scene layer is  left: --cx + k·--cs,  height (or width) j·--cs,  bottom: 2vh + --lift.
    Resize the scene by changing --cs, never by nudging one layer.
-   The scene doesn't move: no scene layer has data-depth or a scroll tween, because any relative
-   movement exposes the layers' baked snow above the bank. Only the (hidden) sky decorations keep data-depth.
+   The scene doesn't move: no layer has pointer parallax or a scroll tween, because any relative
+   movement exposes the layers' baked snow above the bank.
    ══════════════════════════════════════════════════════════════════════════════════════════════ */
 :root{
   /* desktop: scene hugs the right, copy on the left */
@@ -95,9 +93,8 @@ nav .btn{padding:13px 20px;font-size:13px}
   background-image:linear-gradient(to bottom,#d9d2ee 0,#aaa3d6 calc(55% - 0.5*var(--bgh)),#8b87bf calc(100% - var(--bgh) + 2px),rgba(139,135,191,0) calc(100% - var(--bgh) + 0.35*var(--cs))),var(--bgimg);
   background-size:100% 100%,auto var(--bgh);background-position:0 0,center bottom;background-repeat:no-repeat}
 
-/* sky: the old painted-canyon decorations stay in the markup (and keep data-depth) but are hidden */
+/* sky: holds the stable, the baked cast and the ground sparkles */
 .sky{position:absolute;inset:0;overflow:hidden}
-.sky .mesa,.sky .cloud,.sky .sun,.sky .aurora,.sky .stars,.ground,.castlabel,.nativity .glow,.nativity .drift{display:none}
 .sparkles{position:absolute;left:0;right:0;bottom:0;height:22vh;z-index:5;pointer-events:none}
 .sparkles i{position:absolute;width:4px;height:4px;border-radius:50%;background:#fff;box-shadow:0 0 6px rgba(255,255,255,.9);animation:twinkle 3.2s ease-in-out infinite}
 @keyframes twinkle{50%{opacity:.15;transform:scale(.6)}}
@@ -318,17 +315,13 @@ html.fx .rv.in{opacity:1;transform:none;transition:opacity .9s var(--ease),trans
 .frame .name{position:absolute;left:0;right:0;bottom:0;background:var(--ink);color:var(--cream);padding:12px 16px 13px;display:flex;flex-direction:column;align-items:flex-start;gap:3px}
 .frame .name b{font:600 20px/1 var(--display);font-variation-settings:"opsz" 30,"SOFT" 30}
 .frame .name span{font:700 9.5px/1.2 var(--body);letter-spacing:.16em;text-transform:uppercase;opacity:.7}
-.frame.f-santa img{width:200%;left:-52%;top:-4%}
-.frame.f-elves img{width:185%;left:-70%;top:-16%}
-.frame.f-deer img{width:290%;left:2%;top:-118%}
-.frame.f-canyon img{width:250%;left:-150%;top:-98%}
 .frame.f-char{background:var(--cream);transition:transform .3s var(--ease)}
 .frame.f-char:hover{transform:translateY(-8px)}
 .frame.f-char .orb{position:absolute;left:50%;top:46%;width:82%;aspect-ratio:1;border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle at 50% 30%,#FBE8D2 0%,var(--peach) 62%,var(--rust) 100%);opacity:.9}
 .frame.f-char .v{position:absolute;left:50%;top:auto;bottom:52px;height:82%;width:auto;max-width:none;transform:translateX(-50%);transition:opacity .45s var(--ease);filter:drop-shadow(0 18px 18px rgba(44,30,42,.28))}
 .frame.f-char .side{opacity:0}
-.frame.f-char:hover .front,.frame.f-char:focus-within .front,.frame.f-char.turned .front{opacity:0}
-.frame.f-char:hover .side,.frame.f-char:focus-within .side,.frame.f-char.turned .side{opacity:1}
+.frame.f-char:hover .front,.frame.f-char:focus-within .front{opacity:0}
+.frame.f-char:hover .side,.frame.f-char:focus-within .side{opacity:1}
 .frame.f-char .name span::after{content:" · tap to turn"}
 @media (hover:none){.frame.f-char .name span::after{content:""}}
 .frame.f-end{background:linear-gradient(180deg,#B32432,#951826);color:#fff;display:flex;flex-direction:column;justify-content:space-between;padding:28px;box-shadow:none}
@@ -398,8 +391,6 @@ html.fx .rv.in{opacity:1;transform:none;transition:opacity .9s var(--ease),trans
 #join .stamp .ring{fill:none;stroke:currentColor;stroke-width:2}
 #join .stamp text{font:700 13.5px var(--body);letter-spacing:.28em;text-transform:uppercase;fill:currentColor}
 #join .stamp use{color:var(--ink)}
-#join .mail{display:block;margin-top:22px;font:700 16px/1.4 var(--body);color:var(--ink-soft);text-decoration:none}
-#join .mail b{color:var(--ink);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px;word-break:break-all}
 @media (max-width:900px){#join .inner{grid-template-columns:1fr}#join .stamp{width:150px;justify-self:end;margin-top:-10px}}
 
 /* launch-list form (#join) */
