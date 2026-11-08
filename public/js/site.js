@@ -54,12 +54,14 @@
     $$('.ch.talk').forEach(function(o){if(o!==ch)o.classList.remove('talk');});ch.classList.add('talk');
     var r=b.getBoundingClientRect(),pad=12,nx=0;if(r.left<pad)nx=pad-r.left;else if(r.right>window.innerWidth-pad)nx=window.innerWidth-pad-r.right;if(nx)b.style.setProperty('--nx',nx+'px');
     clearTimeout(ch._t);ch._t=setTimeout(function(){ch.classList.remove('talk');},2400);
-    if(window.gsap&&!rm){var f=ch.querySelector('.fig');gsap.fromTo(f,{y:0,scaleX:1,scaleY:1},{keyframes:[{scaleX:1.08,scaleY:.9,duration:.12},{y:-34,scaleX:.96,scaleY:1.06,duration:.28,ease:'power2.out'},{y:0,scaleX:1.06,scaleY:.94,duration:.3,ease:'bounce.out'},{scaleX:1,scaleY:1,duration:.15}]});}}
+    // hop: a CSS animation (site.css @keyframes hop), restarted on every tap
+    if(!rm){var f=ch.querySelector('.fig');f.classList.remove('hop');void f.offsetWidth;f.classList.add('hop');}}
   // the bubbles are aria-hidden; a tap or keypress reads the line out once through #saylive
   var saylive=document.getElementById('saylive');
   function announce(ch){if(!saylive)return;var who=(ch.getAttribute('aria-label')||'').replace(/^Say hello to /,'');
     who=who.charAt(0).toUpperCase()+who.slice(1);saylive.textContent='';setTimeout(function(){saylive.textContent=who+': '+ch.getAttribute('data-say');},60);}
   function talk(ch){if(ch===deerEl&&!found.deer)return;audioOn();boing();say(ch);announce(ch);}
+  $$('.ch .fig').forEach(function(f){f.addEventListener('animationend',function(e){if(e.animationName==='hop')f.classList.remove('hop');});});
   $$('.ch').forEach(function(ch){
     ch.addEventListener('click',function(){talk(ch);});
     ch.addEventListener('keydown',function(e){if(ch.getAttribute('role')!=='button')return;if(e.key==='Enter'||e.key===' '){e.preventDefault();talk(ch);}});

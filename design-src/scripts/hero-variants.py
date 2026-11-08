@@ -13,8 +13,8 @@ import os, subprocess, tempfile
 from PIL import Image
 
 IMG = "public/assets/img"
-# the stable, Santa/Mrs. Claus/elf, boy and girl are now one image built by hero-cast.py (which makes its own sizes)
-LAYERS = ["hero-reindeer"]
+# the stable and Santa/Mrs. Claus/elf are one image built by hero-cast.py (which makes its own sizes)
+LAYERS = ["hero-boy", "hero-girl", "hero-reindeer"]
 HEIGHTS = [520, 900]
 
 

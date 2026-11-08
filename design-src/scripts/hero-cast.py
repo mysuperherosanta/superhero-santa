@@ -1,14 +1,14 @@
-"""Bake the hero's stable, the Santa/Mrs. Claus/elf layer, the elf boy and the elf girl into one image.
+"""Bake the hero's stable and the Santa/Mrs. Claus/elf layer into one image.
 
 Run from the repo root:  python3 design-src/scripts/hero-cast.py
 Needs Pillow and cwebp on PATH. Inputs are the full-size layers in design-src/layers/live/
-(the cleaned versions that used to be served one by one); the Reindeer stays a separate layer
-because it moves when found.
+(the cleaned versions that used to be served one by one). The elf boy, the elf girl and the Reindeer
+stay separate layers (public/assets/img/hero-*.webp) because they move: the boy and girl hop when
+tapped, the Reindeer pops up when found. (Nov 7 the boy and girl were baked in too, which killed the hop.)
 
 All layers share the 1447 px-tall --cs canvas (x offsets from design-src/layers/meta.json).
-The output is cropped to the boy's left edge (x=18) through the girl's right edge (x=2764), so in
-CSS it sits at left: cx + 18/1447·cs and is cs tall. Stacking order matches the old z-index:
-stable (4) < Santa/Mrs. Claus/elf (6) < boy, girl (8).
+The output is cropped to the Santa/Mrs. Claus/elf layer's left edge (x=289) through the stable's right edge
+(x=2663), so in CSS it sits at left: cx + 289/1447·cs and is cs tall. The stable is composited behind the trio.
 Writes public/assets/img/hero-cast.webp plus 520 and 900 px-tall copies for srcset.
 """
 import json, os, subprocess, tempfile
@@ -18,10 +18,10 @@ SRC = "design-src/layers/live"
 OUT = "public/assets/img"
 meta = json.load(open("design-src/layers/meta.json"))
 H = meta["CH"]
-X0, X1 = meta["boy"]["x0"], meta["girl"]["x0"] + 283  # girl layer is 283 px wide
+X0, X1 = meta["mid"]["x0"], meta["stable"]["x0"] + 1805  # stable layer is 1805 px wide
 
 canvas = Image.new("RGBA", (X1 - X0, H), (0, 0, 0, 0))
-for key, name in [("stable", "stable"), ("mid", "nativity-cast"), ("boy", "hero-boy"), ("girl", "hero-girl")]:
+for key, name in [("stable", "stable"), ("mid", "nativity-cast")]:
     layer = Image.open(f"{SRC}/{name}.webp").convert("RGBA")
     canvas.alpha_composite(layer, (meta[key]["x0"] - X0, 0))
 

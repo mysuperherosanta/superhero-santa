@@ -99,10 +99,11 @@ nav .btn{padding:13px 20px;font-size:13px}
 @keyframes twinkle{50%{opacity:.15;transform:scale(.6)}}
 #snowc{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:10}
 
-/* scene layers, back to front: Reindeer (z 5), the cast image (6: stable, Santa, Mrs. Claus, bookkeeper elf, elf boy and
-   elf girl baked into hero-cast.webp by design-src/scripts/hero-cast.py), invisible hit areas (8–9), snowbank (9), snowdrift (10).
-   hero-cast.webp starts at the boy's left edge (x 18 of the 1447-tall canvas). */
-.nativity{position:absolute;bottom:calc(2vh + var(--lift));height:var(--cs);pointer-events:none;left:calc(var(--cx) + 0.0124*var(--cs));width:auto;z-index:6}
+/* scene layers, back to front: Reindeer (z 5), the cast image (6: stable + Santa, Mrs. Claus and the bookkeeper elf, baked into
+   hero-cast.webp by design-src/scripts/hero-cast.py), elf boy and elf girl (8, their own images so they can hop),
+   invisible hit areas for Santa/Mrs. Claus/elf (9), snowbank (9), snowdrift (10).
+   hero-cast.webp starts at the trio's left edge (x 289 of the 1447-tall canvas). */
+.nativity{position:absolute;bottom:calc(2vh + var(--lift));height:var(--cs);pointer-events:none;left:calc(var(--cx) + 0.1997*var(--cs));width:auto;z-index:6}
 .nativity img,.ch img{height:100%;width:auto;max-width:none;filter:saturate(1.14) drop-shadow(0 2px 3px rgba(60,40,60,.22))}
 .nativity img{display:block}
 
@@ -114,10 +115,7 @@ nav .btn{padding:13px 20px;font-size:13px}
 .ch-boy{left:calc(var(--cx) + 0.0124*var(--cs))}
 .ch-girl{left:calc(var(--cx) + 1.7146*var(--cs))}
 .ch-deer{left:calc(var(--cx) + 1.8922*var(--cs));z-index:5}
-/* everyone but the Reindeer is in hero-cast.webp; their 1×1 imgs are transparent hit areas sized to each figure
-   (the boy's and girl's are their old layer boxes, 286 and 283 of 1447 wide) */
-.ch-boy img{width:calc(var(--cs)*0.1977);opacity:0}
-.ch-girl img{width:calc(var(--cs)*0.1956);opacity:0}
+/* Santa, Mrs. Claus and the elf are in hero-cast.webp; their 1×1 imgs are transparent hit areas sized to each figure */
 .ch-santa,.ch-mrs,.ch-elf{z-index:9}
 .ch-elf{left:calc(var(--cx) + 0.2059*var(--cs))}
 .ch-mrs{left:calc(var(--cx) + 0.3649*var(--cs))}
@@ -127,6 +125,11 @@ nav .btn{padding:13px 20px;font-size:13px}
 .ch-santa img{width:calc(var(--cs)*0.2281);opacity:0}
 
 /* speech bubbles sit just above each head (head tops measured from the artwork, as % of the --cs-tall box) */
+/* tap (or hover) hop: squash, jump, bounce. It animates `translate`/`scale` (not `transform`, which .fig pins above), so it
+   works before GSAP has loaded. site.js adds .hop; reduced motion turns animations off. Only the boy, girl and Reindeer
+   have visible art in their .fig; the others are invisible hit areas. */
+@keyframes hop{0%{translate:0 0;scale:1 1}14%{translate:0 0;scale:1.08 .9}47%{translate:0 -34px;scale:.96 1.06}72%{translate:0 0;scale:1.06 .94}86%{translate:0 -6px;scale:1 1}100%{translate:0 0;scale:1 1}}
+.ch .fig.hop{animation:hop .85s cubic-bezier(.3,.7,.4,1)}
 .ch-santa{--head:59.4%}.ch-elf{--head:57.9%}.ch-mrs{--head:56.1%}.ch-boy{--head:50.4%}.ch-girl{--head:49.3%}.ch-deer{--head:55.6%}
 .ch .say{position:absolute;left:50%;bottom:calc(var(--head,100%) + 12px);transform:translate(calc(-50% + var(--nx,0px)),10px) scale(.9);background:#fff;color:var(--ink);
   font:650 clamp(13px,1.15vw,17px)/1.2 var(--display);font-variation-settings:"opsz" 30,"SOFT" 30;padding:10px 16px;border-radius:16px;width:max-content;max-width:min(62vw,320px);text-align:center;
