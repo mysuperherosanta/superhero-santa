@@ -32,15 +32,15 @@ npm run preview      # serve ./out
 
 ## Deploy (one-time setup)
 
-1. Create an empty **public** repo `superherosantaclaus` (on the owner's account), add Nate as a collaborator.
+1. The repo is `mysuperherosanta/superhero-santa` (the `mysuperherosanta` organization; Nate is an admin). It must be **public** for free GitHub Pages.
 2. Push:
    ```sh
-   git remote add origin https://github.com/OWNER/superherosantaclaus.git
+   git remote add origin https://github.com/mysuperherosanta/superhero-santa.git
    git push -u origin main
    ```
-3. Repo → **Settings → Pages → Source: GitHub Actions**. The workflow runs on the push (or re-run it from the Actions tab) and publishes to `https://OWNER.github.io/superherosantaclaus/`.
+3. Repo → **Settings → Pages → Source: GitHub Actions**. The workflow runs on the push (or re-run it from the Actions tab) and publishes to `https://mysuperherosanta.github.io/superhero-santa/`.
 
-The workflow reads the base path from GitHub Pages itself (`/superherosantaclaus` on github.io, empty once a custom domain is attached), so nothing needs editing when the domain goes live.
+The workflow reads the base path from GitHub Pages itself (`/superhero-santa` on github.io, empty once a custom domain is attached), so nothing needs editing when the domain goes live.
 
 ## Custom domain (when ready)
 

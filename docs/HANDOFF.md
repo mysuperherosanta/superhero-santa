@@ -5,7 +5,7 @@ _Last updated 2026-11-07._ _First written 2026-10-18. Picks up from a long Cowor
 ## Where things stand
 
 - **Site:** Next.js 16 App Router, static export (`output: 'export'`) → `out/`. One page so far: `app/page.tsx` renders `content/home.html` verbatim; CSS in `public/css/site.css`, interactions in `public/js/site.js`, GSAP/Lenis self-hosted in `public/vendor/`, fonts self-hosted in `public/fonts/`, artwork in `public/assets/img/` (≈1.3 MB). Matches artifact preview **v35**. From here on, edit this repo, not the artifact. Verified: builds clean, no console errors, works at `/` and under `/superherosantaclaus/` base path.
-- **Repo:** local only. **Not pushed yet.** Plan: the friend (author) owns the GitHub repo and adds Nate as a collaborator; see `OWNER-TODO.md`.
+- **Repo:** [`mysuperherosanta/superhero-santa`](https://github.com/mysuperherosanta/superhero-santa), in the `mysuperherosanta` GitHub organization (moved there from the author's personal account so Nate, `n8patterson`, could be an admin). Pages is served from it at `https://mysuperherosanta.github.io/superhero-santa/` (public repo, **Settings → Pages → Source: GitHub Actions**), still `noindex` until launch.
 - **Hosting:** GitHub Pages via GitHub Actions (`.github/workflows/deploy.yml`; Settings → Pages → Source must be *GitHub Actions*). Base path comes from `actions/configure-pages`, so it switches automatically when the custom domain is added. Cost is the domain only (~$10–20/yr).
 - **Domain:** `superherosantaclaus.com`. DNS not pointed yet; registrar unknown. Set the custom domain in Settings → Pages only once DNS is pointed, then re-run the deploy workflow.
 - **Forms:** the `#join` form (first name, email, optional message) sends to the Superhero Santa Gmail inbox via FormSubmit (backlog #1). Every "Join" button scrolls to it. There is no hello@superherosantaclaus.com address; it was removed from the page and JSON-LD until a domain mailbox exists.
@@ -64,17 +64,20 @@ Images were generated with Higgsfield (`gpt_image_2_5`) and background-removed t
 The site can be public on GitHub Pages before launch without search engines indexing it.
 - **Switch:** `INDEXABLE` in `lib/site.ts`. While `false` (now), every page has `<meta name="robots" content="noindex, nofollow">` and `robots.txt` lists no sitemap. Crawling stays allowed so crawlers can read the noindex (blocking them in `robots.txt` would let the bare URL get listed anyway). The 404 page is always `noindex`.
 - **Launch day:** set `INDEXABLE = true`, push to `main` (the workflow redeploys), then submit `sitemap.xml` in Google Search Console and Bing Webmaster Tools and request indexing of the homepage.
-- **Base path:** on `<owner>.github.io/superherosantaclaus/` the deploy builds with `BASE_PATH=/superherosantaclaus`. Checked Nov 7: CSS, fonts, backdrop, the cast image, deferred images, and `site.js` loading GSAP/Lenis from `/superherosantaclaus/vendor/` all work, as does the form. After the custom domain is set, re-run the workflow so it rebuilds for `/`.
+- **Base path:** on `mysuperherosanta.github.io/superhero-santa/` the deploy builds with `BASE_PATH=/superhero-santa` (from `actions/configure-pages`; the Nov 7 check below used `/superherosantaclaus`, and the code is path-agnostic). Checked Nov 7: CSS, fonts, backdrop, the cast image, deferred images, and `site.js` loading GSAP/Lenis from `/superherosantaclaus/vendor/` all work, as does the form. After the custom domain is set, re-run the workflow so it rebuilds for `/`.
 - Canonical, Open Graph and JSON-LD URLs always point at `https://superherosantaclaus.com/`, so nothing needs changing at launch apart from the switch.
 
-## Placeholders waiting on the owner
+## Owner facts (Nov 7) and what's still to come
 
-On the page as dashed `[bracketed]` boxes (`class="ph"` inline, `.ph-box` for blocks). Search `content/home.html` for `class="ph"` / `ph-box`. None of them is in the JSON-LD; add the real values there too when they arrive.
-- **Author:** name (book details, `#author` heading), a two-line bio, a photo (`.author-photo`: replace the box with an `<img>`, square, at least 520 px). Then add `"author":{"@type":"Person","name":…}` to the Book node.
-- **Book details** (`#book`): release date, print price, ebook price, page count, ISBN, where to buy. Then add `datePublished`, `numberOfPages`, `isbn`, `bookFormat` and `offers` (price, availability, retailer URL) to the Book node.
-- **Page spreads:** three finished spreads for `.spreads` (3:2 boxes; WebP, ~1200 px wide, `data-defer` like the other below-the-fold images).
-- **FAQ:** the release date and retailers in two answers, and one more question and answer in the owner's words. When an answer has no placeholder left, add it to the `FAQPage` node in `content/jsonld.json` (only fully answered questions are there now) and to `public/llms.txt`.
-- **Optional:** social profile URLs, for `sameAs` on the Organization.
+**In:** author **Steven L. Woodfield** and his bio (`#author`, and a `Person` node that the Book and BookSeries point to in `content/jsonld.json`); **nine** sleigh Reindeer; a **ten-minute** read; Book One **coming soon in print and ebook, fall 2027**; **currently a five-book series**. The author name was given as "Seven L. Woodfield" and read as a typo for Steven (the bio and everyone call him Steve/Steven), so confirm it.
+
+**Still placeholders** (dashed `[bracketed]` boxes: `class="ph"` inline, `.ph-box` blocks; search `content/home.html`):
+- **Author photo** (`.author-photo`): replace the box with an `<img>`, square, at least 520 px.
+- **One more FAQ** (`[A question parents often ask you]` / `[Your answer]`): when answered, also add it to the `FAQPage` node and to `public/llms.txt`.
+
+**Book One section** (`#book`) is just the cover and "Coming soon!" for now (the owner's call). When the details exist (exact release date, prices, page count, ISBN, retailers, a few interior spreads), bring back a facts list and add `datePublished`, `numberOfPages`, `isbn`, `bookFormat` and `offers` to the Book node. The earlier facts-list markup is in git history (commit `0fb106b`).
+
+**Optional:** social profile URLs, for `sameAs` on the Organization and the Person.
 
 ## Backlog (in rough priority order)
 

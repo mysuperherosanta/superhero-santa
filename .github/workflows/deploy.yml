@@ -26,7 +26,7 @@ jobs:
       - id: pages
         uses: actions/configure-pages@v5
       - run: npm ci
-      # base_path is "/superherosantaclaus" on github.io, "" once a custom domain is set
+      # base_path is "/superhero-santa" on github.io, "" once a custom domain is set
       - run: npm run build
         env:
           BASE_PATH: ${{ steps.pages.outputs.base_path }}
