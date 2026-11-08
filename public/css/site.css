@@ -1136,3 +1136,9 @@ footer .label{opacity:.75}
 /* the three hit areas over the baked cast overlap a few px; Mrs. Claus's is the narrowest (25px on phones),
    so she sits on top to keep a full 24px tap/click target (WCAG 2.5.8). Stacking only, positions unchanged. */
 .ch-mrs{z-index:10}
+
+/* deferred below-the-fold images (data-defer in home.html, see app/page.tsx): until site.js gives them a src,
+   keep the alt text from showing in the empty box. Without JS the <noscript> copy shows instead. */
+img[data-src]{color:transparent}
+/* !important: rules like `.card .art img{display:block}` are more specific */
+@media (scripting:none){img[data-src]{display:none!important}}

@@ -8,6 +8,24 @@
   var nav=document.getElementById('nav');
   var $$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s));};
 
+  /* deferred images (<img data-defer> in home.html -> data-src/data-srcset, see app/page.tsx).
+     They wait until 1s after window load, so the hero has the connection to itself, or load sooner
+     if the visitor scrolls within 400px of one. (On a fast connection `load` can fire before the hero's
+     first paint, hence the extra second.) Once restored they keep loading="lazy", so the browser still
+     fetches far-away ones on its own schedule.
+     This runs before the reduced-motion / no-GSAP early return below, so every path gets its images. */
+  (function(){
+    var held=$$('img[data-src]');if(!held.length)return;
+    function show(img){var s=img.getAttribute('data-src');if(!s)return;
+      var ss=img.getAttribute('data-srcset');if(ss)img.setAttribute('srcset',ss);
+      img.setAttribute('src',s);img.removeAttribute('data-src');img.removeAttribute('data-srcset');}
+    var io=('IntersectionObserver' in window)?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){io.unobserve(e.target);show(e.target);}});},{rootMargin:'400px 0px'}):null;
+    if(io)held.forEach(function(i){io.observe(i);});
+    function all(){if(io)io.disconnect();held.forEach(show);}
+    function later(){setTimeout(all,1000);}
+    if(document.readyState==='complete')later();else window.addEventListener('load',later);
+  })();
+
   /* snow sparkles on the ground */
   var sp=document.getElementById('sparkles');
   if(sp){for(var q=0;q<34;q++){var d=document.createElement('i');d.style.left=(Math.random()*100)+'%';d.style.top=(Math.random()*100)+'%';d.style.animationDelay=(Math.random()*3.2)+'s';sp.appendChild(d);}}
