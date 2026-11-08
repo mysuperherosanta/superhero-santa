@@ -1,6 +1,6 @@
 import { BASE_PATH } from "@/lib/site";
 
-export const metadata = { title: "Page not found · Superhero Santa", robots: { index: false } };
+export const metadata = { title: "Page not found", robots: { index: false } };
 
 export default function NotFound() {
   return (

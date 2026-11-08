@@ -4,7 +4,7 @@
 # Usage: sh design-src/scripts/subset-fonts.sh /tmp/ft/bin    (run from the repo root)
 #
 # What the page actually uses (measured from computed styles, Oct 2026):
-#   Fraunces roman  wght 500-650, opsz 30-144, SOFT 30-60
+#   Fraunces roman  wght 500-650, opsz 30-144, SOFT 30 only (SOFT 60 is only ever italic)
 #   Fraunces italic wght 500, opsz 144, SOFT 60 only (headline accents)
 #   Nunito          wght 400-700
 # If the CSS starts using other weights or axis values, widen the ranges below and re-run.
@@ -19,7 +19,9 @@ curl -s -o "$TMP/fr-r.woff2" "$(latin Fraunces normal)"
 curl -s -o "$TMP/fr-i.woff2" "$(latin Fraunces italic)"
 curl -s -o "$TMP/nu.woff2" "$(latin Nunito normal)"
 
-"$BIN/fonttools" varLib.instancer "$TMP/fr-r.woff2" wght=400:700 opsz=30:144 SOFT=30:60 -q -o "$TMP/fr-r.ttf"
+# pinned to exactly what the page uses: 55 KB instead of 95 KB with no visible change (Nov 2026). Pinning opsz too
+# (to 144) halves it again but visibly condenses the small opsz-30 labels (bubbles, counter, ribbon), so it stays.
+"$BIN/fonttools" varLib.instancer "$TMP/fr-r.woff2" wght=500:650 opsz=30:144 SOFT=30 -q -o "$TMP/fr-r.ttf"
 "$BIN/fonttools" varLib.instancer "$TMP/fr-i.woff2" wght=500 opsz=144 SOFT=60 -q -o "$TMP/fr-i.ttf"
 "$BIN/fonttools" varLib.instancer "$TMP/nu.woff2" wght=400:700 -q -o "$TMP/nu.ttf"
 

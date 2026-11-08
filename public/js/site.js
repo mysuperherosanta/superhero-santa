@@ -1,9 +1,12 @@
 (function(){
+  // layout.tsx loads this on every page; only the homepage has the hero, nav and everything below
+  if(!document.getElementById('hero'))return;
   var doc=document.documentElement;
   if('scrollRestoration' in history)history.scrollRestoration='manual';
   window.scrollTo(0,0);
   var rm=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var hasGsap=typeof gsap!=='undefined'&&typeof ScrollTrigger!=='undefined';
+  // GSAP, ScrollTrigger and Lenis aren't in the page: they load after the hero (see "motion" at the end)
+  var siteJs=(document.currentScript&&document.currentScript.src)||'';
   var nav=document.getElementById('nav');
   var $$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s));};
 
@@ -12,7 +15,7 @@
      if the visitor scrolls within 400px of one. (On a fast connection `load` can fire before the hero's
      first paint, hence the extra second.) Once restored they keep loading="lazy", so the browser still
      fetches far-away ones on its own schedule.
-     This runs before the reduced-motion / no-GSAP early return below, so every path gets its images. */
+     Part of the core, so every path (reduced motion, no motion libs) gets its images. */
   (function(){
     var held=$$('img[data-src]');if(!held.length)return;
     function show(img){var s=img.getAttribute('data-src');if(!s)return;
@@ -79,7 +82,7 @@
     deerEl.classList.add('found');document.getElementById('hero').classList.add('found-deer');
     deerEl.setAttribute('role','button');deerEl.setAttribute('tabindex','0');deerEl.setAttribute('aria-label','Say hello to the Reindeer');
     if(peek){if(document.activeElement===peek)deerEl.focus({preventScroll:true});peek.remove();}
-    if(window.gsap&&!rm){gsap.to(deerEl,{yPercent:-4,duration:.7,ease:'back.out(2.2)',onComplete:function(){say(deerEl);}});}else{deerEl.style.transform='none';say(deerEl);}
+    if(window.gsap&&!rm){gsap.to(deerEl,{yPercent:-4,duration:.7,ease:'back.out(2.2)',onComplete:function(){say(deerEl);}});}else{deerEl.style.transform='translateY(-4%)';say(deerEl);}
     score('deer','You found the Reindeer!');}
   if(peek)peek.addEventListener('click',findDeer);
   if(deerEl)deerEl.addEventListener('click',function(){if(!found.deer)findDeer();});
@@ -120,112 +123,21 @@
 
   function onScroll(){var y=window.scrollY||window.pageYOffset;navState(y);bgUpdate();safety();}
 
-  if(rm||!hasGsap){
-    doc.classList.add(rm?'rm':'no-js');
-    $$('.rv').forEach(function(e){e.classList.add('in');});
-    window.addEventListener('scroll',onScroll,{passive:true});onScroll();
-    return;
-  }
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+  if(rm)doc.classList.add('rm');
 
-  doc.classList.add('fx');
-  gsap.registerPlugin(ScrollTrigger);
-  var lenis=(typeof Lenis!=='undefined')?new Lenis({lerp:.09,smoothWheel:true}):null;
-  if(lenis){lenis.on('scroll',ScrollTrigger.update);gsap.ticker.add(function(t){lenis.raf(t*1000);});gsap.ticker.lagSmoothing(0);
-    $$('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){var id=a.getAttribute('href');var t=id.length>1&&document.querySelector(id);if(t){e.preventDefault();lenis.scrollTo(t,{offset:-60});
-      // keyboard users carry on from the section they jumped to, as with a native anchor jump
-      if(!t.hasAttribute('tabindex'))t.setAttribute('tabindex','-1');t.focus({preventScroll:true});}});});}
-  window.addEventListener('scroll',onScroll,{passive:true});
-  if(lenis)lenis.on('scroll',function(){onScroll();});
-  onScroll();
-
-  /* reveals (batched) + safety */
-  ScrollTrigger.batch('.rv',{start:'top 90%',onEnter:function(els){els.forEach(function(e){e.classList.add('in');});},once:true});
-  window.addEventListener('load',function(){setTimeout(safety,300);setTimeout(safety,1500);});
-
-  /* hero entrance */
-  var h1Lines=$$('.hero-copy h1 .l > span');
-  gsap.set(h1Lines,{yPercent:110});
-  gsap.set('.ch:not(.ch-deer) .fig',{yPercent:60,opacity:0});
   var mob=window.matchMedia('(max-width:900px)').matches;
-  var intro=gsap.timeline({defaults:{ease:'expo.out'}});
-  intro.to(h1Lines,{yPercent:0,duration:1,stagger:.09})
-       .to('.ch:not(.ch-deer) .fig',{yPercent:0,opacity:1,duration:.9,stagger:.09,ease:'back.out(1.6)',clearProps:'transform,opacity'},'<+.1')
-       .from('.hero-copy .label,.hero-copy p,.hero-cta,.minibook',{y:20,opacity:0,duration:.8,stagger:.08,clearProps:'all'},'-=.7');
-
-  gsap.to('.hero-copy',{y:-40,opacity:.4,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:true}});
-
   /* falling snow (canvas) */
-  (function(){var c=document.getElementById('snowc');if(!c)return;var ctx=c.getContext('2d'),flakes=[],W,H;
+  (function(){var c=document.getElementById('snowc');if(!c||rm)return;var ctx=c.getContext('2d'),flakes=[],W,H;
     function size(){W=c.width=c.offsetWidth;H=c.height=c.offsetHeight;}size();window.addEventListener('resize',size);
     var n=mob?110:240;for(var i=0;i<n;i++)flakes.push({x:Math.random()*W,y:Math.random()*H,r:1+Math.random()*2.6,s:.4+Math.random()*1.1,w:Math.random()*Math.PI*2});
     window.puffSnow=function(px,py){var r=c.getBoundingClientRect();for(var i=0;i<26;i++)flakes.push({x:px-r.left,y:py-r.top,r:1.5+Math.random()*3,s:.3+Math.random()*1.4,w:Math.random()*6.28,vx:(Math.random()-.5)*5,vy:-Math.random()*4,life:70});};
     var hero=document.getElementById('hero');
-    gsap.ticker.add(function(){var rect=hero.getBoundingClientRect();if(rect.bottom<0)return;ctx.clearRect(0,0,W,H);ctx.fillStyle='rgba(255,255,255,.9)';
+    (function tick(){requestAnimationFrame(tick);var rect=hero.getBoundingClientRect();if(rect.bottom<0)return;ctx.clearRect(0,0,W,H);ctx.fillStyle='rgba(255,255,255,.9)';
       for(var i=flakes.length-1;i>=0;i--){var f=flakes[i];
         if(f.life!==undefined){f.vy+=.09;f.x+=f.vx;f.y+=f.vy;f.vx*=.97;f.life--;if(f.life<=0){flakes.splice(i,1);continue;}}
         else{f.y+=f.s;f.w+=.02;f.x+=Math.sin(f.w)*.4;if(f.y>H+4){f.y=-4;f.x=Math.random()*W;}}
-        ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,6.283);ctx.fill();}});})();
-
-  /* ribbon: continuous drift + velocity skew */
-  var track=document.getElementById('track');
-  if(track){var clone=track.firstElementChild;for(var k=0;k<5;k++)track.appendChild(clone.cloneNode(true));
-    var half=clone.getBoundingClientRect().width;
-    var base=gsap.to(track,{x:-half,duration:18,ease:'none',repeat:-1});
-    var proxy={skew:0},clamp=gsap.utils.clamp(-14,14);
-    ScrollTrigger.create({onUpdate:function(self){var v=clamp(self.getVelocity()/-220);if(Math.abs(v)>Math.abs(proxy.skew)){proxy.skew=v;gsap.to(proxy,{skew:0,duration:.6,ease:'power3',overwrite:true,onUpdate:function(){gsap.set('.ribbon',{skewX:proxy.skew});}});}
-      base.timeScale(self.direction===-1?-1.5:1.5);gsap.to(base,{timeScale:self.direction===-1?-1:1,duration:.8,overwrite:'auto'});}});
-  }
-
-  /* the trail: pinned horizontal rail + boot prints + Santa marker */
-  function buildTrail(){
-    var rail=document.getElementById('rail');
-    if(!rail)return;
-    var pathEl=document.querySelector('#trail .path');
-    // the rail's slide spans the whole pin (prints fade in within it), so the section releases as soon as the last card lands
-    var tl=gsap.timeline({scrollTrigger:{trigger:'#trail',start:'top top',end:function(){return '+='+(rail.scrollWidth-window.innerWidth+60);},pin:true,scrub:.6,anticipatePin:1,invalidateOnRefresh:true}});
-    trailST=tl.scrollTrigger;
-    tl.to(rail,{x:function(){return -(rail.scrollWidth-window.innerWidth);},ease:'none',duration:1},0)
-      .fromTo('#marker',{x:0},{x:function(){return pathEl.getBoundingClientRect().width;},ease:'none',duration:1},0)
-      .to('#trail .print',{opacity:1,stagger:.08,ease:'none',duration:.3},0.05);
-    return tl;
-  }
-  var trailST=null;
-  ScrollTrigger.matchMedia({
-    '(min-width:901px)':function(){buildTrail();return function(){trailST=null;};},
-    '(max-width:900px)':function(){gsap.set('#trail .print',{opacity:1});gsap.fromTo('#marker',{x:0},{x:function(){return document.querySelector('#trail .path').getBoundingClientRect().width-60;},ease:'none',scrollTrigger:{trigger:'#trail',start:'top 70%',end:'bottom 40%',scrub:.5}});}
-  });
-
-  /* keyboard in the pinned trail: tabbing to a card scrolls the page to the point where the rail shows it.
-     Without this the browser scrolls the clipped .pin sideways to reveal the card, and the pin never undoes it. */
-  (function(){
-    var pin=document.querySelector('#trail .pin'),rail=document.getElementById('rail');if(!pin||!rail)return;
-    pin.addEventListener('scroll',function(){if(trailST&&pin.scrollLeft)pin.scrollLeft=0;});
-    pin.addEventListener('focusin',function(e){
-      var fr=e.target.closest('.frame');if(!trailST||!fr)return;
-      var max=rail.scrollWidth-window.innerWidth;if(max<=0)return;
-      var at=fr.getBoundingClientRect().left-rail.getBoundingClientRect().left;
-      var want=Math.max(0,Math.min(max,at+fr.offsetWidth/2-window.innerWidth/2));
-      var y=trailST.start+(trailST.end-trailST.start)*(want/max);
-      requestAnimationFrame(function(){pin.scrollLeft=0;if(lenis)lenis.scrollTo(y,{immediate:true});else window.scrollTo(0,y);});
-    });
-  })();
-
-  /* the reason: star rises */
-  gsap.from('#bigstar',{y:70,scale:.6,transformOrigin:'50% 50%',opacity:0,ease:'expo.out',duration:1.2,scrollTrigger:{trigger:'#reason',start:'top 70%'}});
-
-  /* series cards fan from a stack */
-  var cards=$$('#stack .card');
-  if(!mob&&cards.length){
-    gsap.set(cards,{opacity:0,y:60,rotation:function(i){return (i-1)*-6;},x:function(i){return (1-i)*140;}});
-    var fanned=false;
-    function fan(){if(fanned)return;fanned=true;gsap.to(cards,{opacity:1,y:0,rotation:0,x:0,duration:1.1,ease:'expo.out',stagger:.1,clearProps:'transform,opacity'});}
-    ScrollTrigger.create({trigger:'#stack',start:'top 80%',once:true,onEnter:fan});
-    var fanSafety=function(){var r=document.getElementById('stack').getBoundingClientRect();if(r.top<window.innerHeight&&r.bottom>0)fan();};
-    window.addEventListener('scroll',fanSafety,{passive:true});if(lenis)lenis.on('scroll',fanSafety);
-  }
-
-  /* stamp rotates with scroll */
-  gsap.to('#stamp',{rotation:180,ease:'none',scrollTrigger:{trigger:'#join',start:'top bottom',end:'bottom top',scrub:true}});
+        ctx.beginPath();ctx.arc(f.x,f.y,f.r,0,6.283);ctx.fill();}})();})();
 
   /* ── kid fun: confetti, poppable boot prints, spinning star ── */
   (function(){
@@ -233,11 +145,11 @@
     function size(){c.width=window.innerWidth;c.height=window.innerHeight;}size();window.addEventListener('resize',size);
     var cols=['#B4202B','#3F8F3C','#F5B98A','#FBE8D2','#B45A3C','#FFF'];
     window.confettiBurst=function(x,y){for(var i=0;i<70;i++)bits.push({x:x,y:y,vx:(Math.random()-.5)*11,vy:-Math.random()*13-3,g:.34,r:Math.random()*7+4,a:Math.random()*6,va:(Math.random()-.5)*.35,c:cols[(Math.random()*cols.length)|0],l:110});};
-    gsap.ticker.add(function(){if(!bits.length){return;}ctx.clearRect(0,0,c.width,c.height);
+    (function tick(){requestAnimationFrame(tick);if(!bits.length){return;}ctx.clearRect(0,0,c.width,c.height);
       for(var i=bits.length-1;i>=0;i--){var b=bits[i];b.vy+=b.g;b.x+=b.vx;b.y+=b.vy;b.a+=b.va;b.l--;
         ctx.save();ctx.translate(b.x,b.y);ctx.rotate(b.a);ctx.fillStyle=b.c;ctx.globalAlpha=Math.max(0,Math.min(1,b.l/40));ctx.fillRect(-b.r/2,-b.r/2,b.r,b.r*.6);ctx.restore();
         if(b.l<=0||b.y>c.height+40)bits.splice(i,1);}
-      if(!bits.length)ctx.clearRect(0,0,c.width,c.height);});
+      if(!bits.length)ctx.clearRect(0,0,c.width,c.height);})();
   })();
   $$('#trail .print').forEach(function(h){h.addEventListener('click',function(){h.classList.remove('pop');void h.getBoundingClientRect();h.classList.add('pop');});});
   /* launch-list form: FormSubmit emails each signup to the owner's inbox (no backend). With JS it posts
@@ -274,6 +186,99 @@
   var bs=document.getElementById('bigstar');
   if(bs)bs.addEventListener('click',function(){bs.classList.remove('spin');void bs.getBoundingClientRect();bs.classList.add('spin');if(window.confettiBurst){var r=bs.getBoundingClientRect();window.confettiBurst(r.left+r.width/2,r.top+r.height/2);}});
 
-  var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){if(lenis)lenis.resize();ScrollTrigger.refresh();},150);});
-  window.addEventListener('load',function(){setTimeout(function(){if(lenis)lenis.resize();ScrollTrigger.refresh();},400);});
+  /* ── motion: smooth scroll, reveals, ribbon, trail pin, star, cards. GSAP/ScrollTrigger/Lenis (~60 KB) load
+     after the hero (1 s after window load, or on the first scroll/key/touch), so they don't compete with it.
+     The headline entrance is CSS (site.css) and runs at once. Skipped for reduced motion. ── */
+  if(rm)return;
+  var motionStarted=false;
+  function loadScript(name,cb){var el=document.createElement('script');el.src=siteJs.replace(/js\/site\.js(\?.*)?$/,'vendor/'+name);el.onload=cb;document.head.appendChild(el);}
+  function startMotion(){if(motionStarted||!siteJs)return;motionStarted=true;
+    loadScript('gsap.min.js',function(){loadScript('ScrollTrigger.min.js',function(){loadScript('lenis.min.js',motion);});});}
+  ['wheel','touchstart','keydown'].forEach(function(t){window.addEventListener(t,startMotion,{once:true,passive:true});});
+  if(document.readyState==='complete')setTimeout(startMotion,1000);else window.addEventListener('load',function(){setTimeout(startMotion,1000);});
+
+  function motion(){
+    if(typeof gsap==='undefined'||typeof ScrollTrigger==='undefined')return;
+    // anything already on screen or scrolled past stays visible; only what's still below the fold reveals
+    $$('.rv:not(.in)').forEach(function(el){if(el.getBoundingClientRect().top<window.innerHeight)el.classList.add('in');});
+    doc.classList.add('fx');
+    gsap.registerPlugin(ScrollTrigger);
+    var lenis=(typeof Lenis!=='undefined')?new Lenis({lerp:.09,smoothWheel:true}):null;
+    if(lenis){lenis.on('scroll',ScrollTrigger.update);gsap.ticker.add(function(t){lenis.raf(t*1000);});gsap.ticker.lagSmoothing(0);
+      $$('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){var id=a.getAttribute('href');var t=id.length>1&&document.querySelector(id);if(t){e.preventDefault();lenis.scrollTo(t,{offset:-60});
+        // keyboard users carry on from the section they jumped to, as with a native anchor jump
+        if(!t.hasAttribute('tabindex'))t.setAttribute('tabindex','-1');t.focus({preventScroll:true});}});});}
+    if(lenis)lenis.on('scroll',function(){onScroll();});
+    onScroll();
+
+    /* reveals (batched) + safety */
+    ScrollTrigger.batch('.rv',{start:'top 90%',onEnter:function(els){els.forEach(function(e){e.classList.add('in');});},once:true});
+    setTimeout(safety,300);
+
+    gsap.to('.hero-copy',{y:-40,opacity:.4,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:true}});
+
+    /* ribbon: continuous drift + velocity skew */
+    var track=document.getElementById('track');
+    if(track){var clone=track.firstElementChild;for(var k=0;k<5;k++)track.appendChild(clone.cloneNode(true));
+      var half=clone.getBoundingClientRect().width;
+      var base=gsap.to(track,{x:-half,duration:18,ease:'none',repeat:-1});
+      var proxy={skew:0},clamp=gsap.utils.clamp(-14,14);
+      ScrollTrigger.create({onUpdate:function(self){var v=clamp(self.getVelocity()/-220);if(Math.abs(v)>Math.abs(proxy.skew)){proxy.skew=v;gsap.to(proxy,{skew:0,duration:.6,ease:'power3',overwrite:true,onUpdate:function(){gsap.set('.ribbon',{skewX:proxy.skew});}});}
+        base.timeScale(self.direction===-1?-1.5:1.5);gsap.to(base,{timeScale:self.direction===-1?-1:1,duration:.8,overwrite:'auto'});}});
+    }
+
+    /* the trail: pinned horizontal rail + boot prints + Santa marker */
+    function buildTrail(){
+      var rail=document.getElementById('rail');
+      if(!rail)return;
+      var pathEl=document.querySelector('#trail .path');
+      // the rail's slide spans the whole pin (prints fade in within it), so the section releases as soon as the last card lands
+      var tl=gsap.timeline({scrollTrigger:{trigger:'#trail',start:'top top',end:function(){return '+='+(rail.scrollWidth-window.innerWidth+60);},pin:true,scrub:.6,anticipatePin:1,invalidateOnRefresh:true}});
+      trailST=tl.scrollTrigger;
+      tl.to(rail,{x:function(){return -(rail.scrollWidth-window.innerWidth);},ease:'none',duration:1},0)
+        .fromTo('#marker',{x:0},{x:function(){return pathEl.getBoundingClientRect().width;},ease:'none',duration:1},0)
+        .to('#trail .print',{opacity:1,stagger:.08,ease:'none',duration:.3},0.05);
+      return tl;
+    }
+    var trailST=null;
+    ScrollTrigger.matchMedia({
+      '(min-width:901px)':function(){buildTrail();return function(){trailST=null;};},
+      '(max-width:900px)':function(){gsap.set('#trail .print',{opacity:1});gsap.fromTo('#marker',{x:0},{x:function(){return document.querySelector('#trail .path').getBoundingClientRect().width-60;},ease:'none',scrollTrigger:{trigger:'#trail',start:'top 70%',end:'bottom 40%',scrub:.5}});}
+    });
+
+    /* keyboard in the pinned trail: tabbing to a card scrolls the page to the point where the rail shows it.
+       Without this the browser scrolls the clipped .pin sideways to reveal the card, and the pin never undoes it. */
+    (function(){
+      var pin=document.querySelector('#trail .pin'),rail=document.getElementById('rail');if(!pin||!rail)return;
+      pin.addEventListener('scroll',function(){if(trailST&&pin.scrollLeft)pin.scrollLeft=0;});
+      pin.addEventListener('focusin',function(e){
+        var fr=e.target.closest('.frame');if(!trailST||!fr)return;
+        var max=rail.scrollWidth-window.innerWidth;if(max<=0)return;
+        var at=fr.getBoundingClientRect().left-rail.getBoundingClientRect().left;
+        var want=Math.max(0,Math.min(max,at+fr.offsetWidth/2-window.innerWidth/2));
+        var y=trailST.start+(trailST.end-trailST.start)*(want/max);
+        requestAnimationFrame(function(){pin.scrollLeft=0;if(lenis)lenis.scrollTo(y,{immediate:true});else window.scrollTo(0,y);});
+      });
+    })();
+
+    /* the reason: star rises */
+    gsap.from('#bigstar',{y:70,scale:.6,transformOrigin:'50% 50%',opacity:0,ease:'expo.out',duration:1.2,scrollTrigger:{trigger:'#reason',start:'top 70%'}});
+
+    /* series cards fan from a stack */
+    var cards=$$('#stack .card');
+    if(!mob&&cards.length&&cards[0].getBoundingClientRect().top>window.innerHeight){
+      gsap.set(cards,{opacity:0,y:60,rotation:function(i){return (i-1)*-6;},x:function(i){return (1-i)*140;}});
+      var fanned=false;
+      function fan(){if(fanned)return;fanned=true;gsap.to(cards,{opacity:1,y:0,rotation:0,x:0,duration:1.1,ease:'expo.out',stagger:.1,clearProps:'transform,opacity'});}
+      ScrollTrigger.create({trigger:'#stack',start:'top 80%',once:true,onEnter:fan});
+      var fanSafety=function(){var r=document.getElementById('stack').getBoundingClientRect();if(r.top<window.innerHeight&&r.bottom>0)fan();};
+      window.addEventListener('scroll',fanSafety,{passive:true});if(lenis)lenis.on('scroll',fanSafety);
+    }
+
+    /* stamp rotates with scroll */
+    gsap.to('#stamp',{rotation:180,ease:'none',scrollTrigger:{trigger:'#join',start:'top bottom',end:'bottom top',scrub:true}});
+
+    var rt;window.addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){if(lenis)lenis.resize();ScrollTrigger.refresh();},150);});
+    setTimeout(function(){if(lenis)lenis.resize();ScrollTrigger.refresh();},400);
+  }
 })();

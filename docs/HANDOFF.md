@@ -22,7 +22,7 @@ _Last updated 2026-11-07._ _First written 2026-10-18. Picks up from a long Cowor
 | `#series` | Three series cards; card 1 (Book One) has the book-one spread full-bleed across its top |
 | `#join` | Launch-list CTA |
 
-**Interactions (`public/js/site.js`):** no splash screen (the hero animates in on load); Lenis smooth scroll; tap a character → speech bubble from `data-say`; hidden-object hunt (candy cane `#cane`, star `#gstar`, peeking Reindeer `#deer`/`#peek`) with counter `#counter` and confetti `#conf`; sound toggle `#sfx`; `prefers-reduced-motion` respected.
+**Interactions (`public/js/site.js`):** no splash screen; on load only the headline and hero copy animate in, while the whole cast (stable, baked Santa/Mrs. Claus/elf, boy, girl) shows at once; Lenis smooth scroll; tap a character → speech bubble from `data-say`; hidden-object hunt (candy cane `#cane`, star `#gstar`, peeking Reindeer `#deer`/`#peek`) with counter `#counter` and confetti `#conf`; sound toggle `#sfx`; `prefers-reduced-motion` respected.
 
 ## How the hero works (read before touching it)
 
@@ -35,7 +35,7 @@ All hero layers are positioned on one virtual canvas:
 - **One ground:** a full-width snowbank (`.bank`, z 9) runs from the bottom up to the feet line (`.078·cs` above the canvas bottom), topped by a wavy `.cap` that is `.024·cs` tall. The cap is sized from `--cs`, not from the bank's height, so its waves never dip below the feet at any width. Every layer stands in this snow, and the snowdrift (`.hidey`) sits on top of it. **The scene doesn't move:** no layer has pointer parallax or a scroll tween, because any relative movement exposes the layers' baked snow above the bank. Nothing in the page uses `data-depth` any more, and `site.js` has no parallax code.
 - Speech bubbles sit at each character's `--head` (head top as % of the `--cs`-tall box, measured from the art). A talking character comes forward (`.ch.talk`, z 12).
 - **Backdrop scales with the cast, not the viewport:** `--bgh = max(min(2.2·cs, --bgcap), 100vw/2.466)`, image anchored `center bottom`. `--bgcap` keeps the domes and spires from rising behind the copy: `100vh`, `92vh` on short (≤760px tall) 901–1280px screens, `112vh` from 1700px. On ≤900px it's `max(2.5·cs + lift, 100vw/2.466)`. Above the image, a lavender gradient (`#d9d2ee → #aaa3d6 → #8b87bf`) fills tall phone screens and fades into the image top. If you swap the backdrop, resample its top-row colour and update those three stops plus `background-color`.
-- Layers in the DOM: `.sky` wraps the stable, the baked cast and the ground sparkles (`#sparkles`, filled by `site.js`); the rest sit directly in `#hero`. `.stable3 img` (stable + Holy Family + animals, `assets/img/stable.webp`), `.nativity img` (Santa, Mrs. Claus, bookkeeper elf baked together, `nativity-cast.webp`; the `.ch-santa/.ch-mrs/.ch-elf` imgs are 1×1 placeholders that only carry hit areas and speech bubbles), `.ch-boy`, `.ch-girl`, `.ch-deer` (each its own webp).
+- Layers in the DOM: `.sky` wraps the cast image and the ground sparkles (`#sparkles`, filled by `site.js`); the rest sit directly in `#hero`. `.nativity img` is **one image of the whole cast** (`hero-cast.webp` + 520/900 px-tall copies): stable, Holy Family, animals, Santa, Mrs. Claus, the bookkeeper elf, the elf boy and the elf girl, baked together by `design-src/scripts/hero-cast.py` from the full-size layers in `design-src/layers/live/`. It starts at the boy's left edge (`left: cx + 0.0124·cs`). The `.ch-santa/.ch-mrs/.ch-elf/.ch-boy/.ch-girl` imgs are 1×1 placeholders that only carry hit areas and speech bubbles. Only `.ch-deer` is still its own image, because it pops up when found. (Nov 7: the boy and girl used to be separate layers and animated in after everyone else.)
 
 **Where it lives in `site.css`:** one block between the `══ HERO ══` banner and the ribbon. Order inside it: canvas variables (`--cs/--cx/--lift` on `:root`) and `#hero` (backdrop), `.sky` + sparkles, scene layers (stable, nativity, `.ch` characters with their `left: cx + k·cs` constants), speech bubbles, snowbank, hidden-object hunt (Reindeer, snowdrift + `#peek`, "Tap the snowdrift!", cane, star), counter/sound, hero copy, then the media queries (≥1281px canvas, `--bgcap` overrides, the hidden ghost button, and one `≤900px` block for phones). Desktop is the base; the `≤900px` block overrides it. Each value is set once, so edit it where it is rather than appending an override at the end of the file. (Oct 18: collapsed from the old stack of override passes. Verified pixel-identical at 15 viewport sizes, including found-Reindeer, talking and `#join` states. Computed styles match everywhere except a few no-ops that were dropped: `translate:0 0` on `.ch`, `rotate:0deg` on `.ch .fig`, the Reindeer's `transition:none`, the radius/transition on the background-less `.sticker`s, the `peek2` keyframes renamed to `peek`, and a reduced-motion mirror on the invisible Mrs. Claus placeholder.)
 
@@ -68,7 +68,7 @@ Images were generated with Higgsfield (`gpt_image_2_5`) and background-removed t
 2. **Hero fixes and story copy: done 2026-10-17** (see "Oct 17 changes" below). The owner still hasn't sent his own "few small things" list; ask for it.
 2c. **Character pages (later):** each search-party card should click through to its own page, with games/activities per character.
 3. ~~Collapse the hero CSS override stack~~ — done Oct 18 (see "Where it lives in `site.css`").
-4. **Performance:** first pass done Oct 18 (see "Performance + accessibility pass" below). Second pass done Nov 7 (see "Mobile LCP pass" below): the runtime strip and deferred images take mobile Lighthouse LCP from 4.5 s to 3.2 s. Getting under 2.5 s now needs a design call (fonts or a lighter phone hero).
+4. **Performance:** done. Mobile Lighthouse LCP went 5.6 s (Oct 18) → 4.5 s → 3.2 s → **2.4 s** (Nov 7, under the 2.5 s target). See "Performance + accessibility pass" and "Mobile LCP pass" below.
 5. **Share image:** done (`og-image.jpg`). Redo it with the title lettered in once the cover type is final.
 6. **Analytics + Search Console:** add the Cloudflare Web Analytics snippet (free, no cookie banner); verify the domain in Google Search Console and Bing Webmaster Tools and submit `sitemap.xml` once DNS is live. For GEO, the biggest remaining win is facts only the owner has: author name and bio, release date, page count, price and ISBN, on the page and in `jsonld.json`.
 7. **More pages** (normal App Router routes in TSX; first candidates: `/characters/[slug]` via `generateStaticParams`, linked from the search-party cards) from the SEO plan in `docs/private/` (parent guide, /for-churches, character pages, printables). Each gets its own canonical, JSON-LD and sitemap entry.
@@ -153,7 +153,7 @@ The rest is fonts (139 KB) and the hero art. Getting under 2.5 s would take a de
 - **The cast is keyboard-operable:** Santa, Mrs. Claus, the elf, the boy and the girl are `role="button"` with `tabindex="0"` and names ("Say hello to Santa Claus"); Enter/Space make them talk. The spoken line is read once through a visually hidden live region (`#saylive`); the bubbles stay `aria-hidden`. Hover still shows the bubble without announcing it.
 - **Hidden-object hunt:** finding the Reindeer turns it into a "Say hello to the Reindeer" button and moves focus to it (the `#peek` button is removed). Found items get `aria-disabled` and a "…: found" label. `#counter` (`aria-live`) announces progress as before.
 - **Pinned trail:** each character card is focusable (focus turns it around, like hover). Tabbing into the pinned rail used to scroll `.pin` sideways and leave the trail broken; now the page scrolls to the point where the rail shows the focused card, and `.pin` is held at `scrollLeft 0`.
-- **Nav:** focus inside the nav un-hides it (it was hidden off-screen after scrolling down). With Lenis, in-page links now also move focus to the target section (`tabindex=-1`), as a native jump would.
+- **Nav:** always visible (sticky since Nov 7; it used to hide when scrolling down). With Lenis, in-page links also move focus to the target section (`tabindex=-1`), as a native jump would.
 - **Sound toggle** has a fixed name ("Sound effects") with state in `aria-pressed` (the label used to change too).
 - **Form:** a bad email sets `aria-invalid` and is described by the status message.
 - **Contrast / focus:** footer labels .6 → .75 opacity (4.32:1 → AA); focus rings are gold instead of red in the footer and the dark nav, where red was under 3:1. Mrs. Claus's hit area sits above her neighbours so it keeps a 24 px target on phones (stacking only).
@@ -219,19 +219,25 @@ The 5-run LCPs were within ±5 ms of each other (Lantern simulation is determini
 - **Visuals:** full-page screenshots with reduced motion, before vs after, are the same height at all three widths. The only differing pixels are the randomised snow sparkles. Normal-motion section shots (story, trail, series) show every deferred image.
 - **axe-core 4.14** (WCAG 2.0–2.2 A/AA + best practice): 0 violations at 390×844. At 1440×900 (and with reduced motion) it reports one `label-content-name-mismatch` on the nav brand link (`aria-label="Superhero Santa — home"`). That is **identical on the Oct 18 baseline build**, so it isn't from this pass. It's likely a rule the Oct 18 axe run didn't include; see follow-ups.
 
-**What's left between 3.2 s and 2.5 s.** Unthrottled, the hero paints at ~140 ms. In the simulation, everything requested before that competes for the Slow 4G link:
-- the three fonts (136 KB, VeryHigh priority);
-- the hero layers + phone backdrop (~127 KB);
-- GSAP/ScrollTrigger/Lenis/site.js (~60 KB, `defer`).
+**Third pass (Nov 7, later): 3.16 s → 2.40 s, under the 2.5 s target.** Three changes, the owner's call:
 
-Options, all needing a decision:
-- subset Fraunces roman further (pin `opsz`/`SOFT`, ~93 KB today);
-- load GSAP/ScrollTrigger only after the hero paints (the intro animation would start later);
-- a lighter phone hero.
+| (median of 5 mobile / 3 desktop) | Mobile before | **Mobile after** | Desktop before | **Desktop after** |
+|---|---|---|---|---|
+| Performance | 94 | **98** | 100 | **100** |
+| LCP | 3.16 s | **2.40 s** | 0.73 s | **0.62 s** |
+| FCP | 0.65 s | **0.65 s** | 0.17 s | **0.17 s** |
+| CLS | 0.014 | **0.010** | 0.004 | **0.001** |
+| TBT | 0 ms | **0 ms** | 0 ms | **0 ms** |
+| Page weight | 549 KB | **498 KB** | 801 KB | **750 KB** |
+
+- **One cast image.** The stable, Santa/Mrs. Claus/elf, the boy and the girl are one image (`hero-cast*.webp`, see "How the hero works"), so there are three fewer hero requests and fewer bytes at every size: 71 KB vs 85 KB at the 520 px size.
+- **Slimmer Fraunces.** The roman file is instanced to exactly what the page uses (wght 500–650, opsz 30–144, SOFT 30): 95 KB → 55 KB, rendering identical. `@font-face` declares `font-weight:500 650`. Pinning `opsz` to 144 as well would give 29 KB, but it visibly condenses the small opsz-30 labels (bubbles, counter, ribbon), so it's not done. See `design-src/scripts/subset-fonts.sh`. If the CSS starts using a Fraunces weight outside 500–650, widen the range there and re-run.
+- **GSAP after the hero.** `layout.tsx` loads only `site.js`. Its **core** runs at once with no GSAP: images, sound, cast taps, the hunt, the nav/section colours, the form, plus snow and confetti on `requestAnimationFrame`. The **motion** part (Lenis, reveals, ribbon, trail pin, hero-copy fade, star, cards, stamp) loads `vendor/gsap.min.js` → `ScrollTrigger.min.js` → `lenis.min.js` from beside `site.js` **1 s after `load`**, or on the first wheel/touch/keypress. The hero entrance (headline lines rising, then label/copy/CTAs) is a **CSS animation** (`h1rise`/`heroup` in `site.css`, using `translate` so it doesn't fight the minibook's tilt), so it still plays at once. When motion starts, `.rv` elements already on screen or scrolled past are marked `.in` before `html.fx` is added, so nothing blinks out, and the series cards only fan in if they're still below the fold.
+- Verified at 1440/820/390 on the built site: GSAP absent at 300 ms with the cast and headline animating, then loaded with Lenis/pin/reveals working, no element left hidden, form OK, no console errors.
 
 **Follow-ups found (not fixed here)**
-- **Reduced motion skips the form's AJAX:** `site.js` returns early for reduced motion / no GSAP before the form wiring. The `#join` form then does a plain POST to FormSubmit and leaves the site (still works, but no in-place thank-you). Moving the form block above the early return would fix it.
-- **404 console error:** `site.js` and GSAP load on the 404 page too (they're in `layout.tsx`) and throw `Cannot read properties of null (reading 'addEventListener')` at `nav.addEventListener('focusin', …)` (there's no `#nav` on the 404). Same on the baseline. Either load the scripts only on the homepage or make `site.js` bail out when `#hero` is missing.
+- ~~**Reduced motion skips the form's AJAX**~~: fixed Nov 7. The form is part of `site.js`'s core, which runs for every visitor.
+- ~~**404 console error**~~: fixed Nov 7. `site.js` returns at once when the page has no `#hero`, and GSAP no longer loads on every page.
 - **axe nav brand:** the `label-content-name-mismatch` above. The visible text also includes the tagline ("Picture books · Book One coming soon"), which the `aria-label` leaves out. Drop the `aria-label` (the visible text is a fine name) or include the tagline. The footer brand link has the same pattern.
 - `layout.tsx`'s two backdrop `<link rel="preload">` appear twice in the HTML (Next hoists a copy). The browser dedupes same-URL preloads, so it's cosmetic.
 

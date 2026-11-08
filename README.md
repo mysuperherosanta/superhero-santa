@@ -13,7 +13,7 @@ app/robots.ts         robots.txt
 content/home.html     homepage markup (ported from the hand-built page)
 content/jsonld.json   structured data for the homepage
 public/css/site.css   all site CSS
-public/js/site.js     all interactions (GSAP, Lenis, hidden-object hunt, …)
+public/js/site.js     all interactions (hidden-object hunt, form, …); loads GSAP/Lenis after the hero
 public/vendor/        GSAP 3.12.5 + ScrollTrigger, Lenis 1.1.18 (self-hosted, pinned)
 public/assets/img/    artwork
 lib/site.ts           SITE_URL + base-path helper

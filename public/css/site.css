@@ -1,7 +1,7 @@
 /* Self-hosted fonts (OFL): Latin subsets made by design-src/scripts/subset-fonts.sh.
-   Fraunces roman keeps wght 400-700, opsz 30-144, SOFT 30-60; the italic is the one style the
+   Fraunces roman keeps wght 500-650, opsz 30-144, SOFT 30; the italic is the one style the
    page uses (500, opsz 144, SOFT 60), declared over 400-700 so other weights reuse it, not faux bold. */
-@font-face{font-family:"Fraunces";font-style:normal;font-weight:400 700;font-display:swap;src:url(../fonts/fraunces-roman.woff2) format("woff2")}
+@font-face{font-family:"Fraunces";font-style:normal;font-weight:500 650;font-display:swap;src:url(../fonts/fraunces-roman.woff2) format("woff2")}
 @font-face{font-family:"Fraunces";font-style:italic;font-weight:400 700;font-display:swap;src:url(../fonts/fraunces-italic.woff2) format("woff2")}
 @font-face{font-family:"Nunito";font-style:normal;font-weight:400 700;font-display:swap;src:url(../fonts/nunito.woff2) format("woff2")}
 :root{
@@ -99,13 +99,12 @@ nav .btn{padding:13px 20px;font-size:13px}
 @keyframes twinkle{50%{opacity:.15;transform:scale(.6)}}
 #snowc{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:10}
 
-/* scene layers, back to front: stable (z 4), Reindeer (5), Santa + Mrs. Claus + bookkeeper elf baked into one image (6),
-   elf boy and girl (8), invisible hit areas for Santa/Mrs. Claus/elf (9), snowbank (9), snowdrift (10) */
-.stable3,.nativity{position:absolute;bottom:calc(2vh + var(--lift));height:var(--cs);pointer-events:none}
-.stable3{left:calc(var(--cx) + 0.593*var(--cs));z-index:4}
-.nativity{left:calc(var(--cx) + 0.1997*var(--cs));width:auto;z-index:6}
-.stable3 img,.nativity img,.ch img{height:100%;width:auto;max-width:none;filter:saturate(1.14) drop-shadow(0 2px 3px rgba(60,40,60,.22))}
-.stable3 img,.nativity img{display:block}
+/* scene layers, back to front: Reindeer (z 5), the cast image (6: stable, Santa, Mrs. Claus, bookkeeper elf, elf boy and
+   elf girl baked into hero-cast.webp by design-src/scripts/hero-cast.py), invisible hit areas (8–9), snowbank (9), snowdrift (10).
+   hero-cast.webp starts at the boy's left edge (x 18 of the 1447-tall canvas). */
+.nativity{position:absolute;bottom:calc(2vh + var(--lift));height:var(--cs);pointer-events:none;left:calc(var(--cx) + 0.0124*var(--cs));width:auto;z-index:6}
+.nativity img,.ch img{height:100%;width:auto;max-width:none;filter:saturate(1.14) drop-shadow(0 2px 3px rgba(60,40,60,.22))}
+.nativity img{display:block}
 
 /* characters: each .ch is a --cs-tall box on the canvas; tap one to talk */
 .ch{position:absolute;bottom:calc(2vh + var(--lift));height:var(--cs);z-index:8;pointer-events:auto;cursor:pointer;will-change:transform;-webkit-tap-highlight-color:transparent}
@@ -115,7 +114,10 @@ nav .btn{padding:13px 20px;font-size:13px}
 .ch-boy{left:calc(var(--cx) + 0.0124*var(--cs))}
 .ch-girl{left:calc(var(--cx) + 1.7146*var(--cs))}
 .ch-deer{left:calc(var(--cx) + 1.8922*var(--cs));z-index:5}
-/* Santa, Mrs. Claus and the elf are in nativity-cast.webp; their 1×1 imgs are transparent hit areas sized to each figure */
+/* everyone but the Reindeer is in hero-cast.webp; their 1×1 imgs are transparent hit areas sized to each figure
+   (the boy's and girl's are their old layer boxes, 286 and 283 of 1447 wide) */
+.ch-boy img{width:calc(var(--cs)*0.1977);opacity:0}
+.ch-girl img{width:calc(var(--cs)*0.1956);opacity:0}
 .ch-santa,.ch-mrs,.ch-elf{z-index:9}
 .ch-elf{left:calc(var(--cx) + 0.2059*var(--cs))}
 .ch-mrs{left:calc(var(--cx) + 0.3649*var(--cs))}
@@ -211,6 +213,15 @@ nav .btn{padding:13px 20px;font-size:13px}
 .hero-copy h1{font-size:clamp(28px,3.5vw,52px);color:var(--ink);letter-spacing:-.028em;line-height:1}
 .hero-copy h1 .l{display:block;overflow:hidden;padding-bottom:.08em;margin-bottom:-.08em}
 .hero-copy h1 .l > span{display:block}
+/* hero entrance in CSS, so it plays at once (GSAP loads after the hero): headline lines rise, then label/copy/CTAs fade up.
+   `translate`, not `transform`, so it doesn't fight the minibook's tilt or hover. Reduced motion turns animations off. */
+@keyframes h1rise{from{translate:0 110%}to{translate:0 0}}
+@keyframes heroup{from{translate:0 20px;opacity:0}to{translate:0 0;opacity:1}}
+.hero-copy h1 .l>span{animation:h1rise 1s var(--ease) both}
+.hero-copy h1 .l:nth-child(2)>span{animation-delay:.09s}
+.hero-copy h1 .l:nth-child(3)>span{animation-delay:.18s}
+.hero-copy .label,.hero-copy>p:not(.label),.hero-cta,.minibook{animation:heroup .8s var(--ease) both}
+.hero-copy .label{animation-delay:.48s}.hero-copy>p:not(.label){animation-delay:.56s}.hero-cta{animation-delay:.64s}.minibook{animation-delay:.72s}
 .hero-copy h1 .w{display:inline-block;transition:transform .3s var(--ease);pointer-events:auto}
 .hero-copy h1 .w:hover{transform:translateY(-6px) rotate(-3deg)}
 .hero-copy h1 em{font-style:italic;color:var(--red)}

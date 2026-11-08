@@ -57,10 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       {/* site.js sets the body background as sections scroll by */}
       <body suppressHydrationWarning>
         {children}
-        {/* Self-hosted (public/vendor, pinned: GSAP 3.12.5, Lenis 1.1.18). defer keeps order. */}
-        <script defer src={asset("/vendor/gsap.min.js")} />
-        <script defer src={asset("/vendor/ScrollTrigger.min.js")} />
-        <script defer src={asset("/vendor/lenis.min.js")} />
+        {/* site.js loads GSAP 3.12.5 / ScrollTrigger / Lenis 1.1.18 (self-hosted in public/vendor) itself, after the hero */}
         <script defer src={asset("/js/site.js")} />
       </body>
     </html>
