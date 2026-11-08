@@ -62,8 +62,8 @@ Images were generated with Higgsfield (`gpt_image_2_5`) and background-removed t
 ## Go live (GitHub Pages, not indexable yet)
 
 The site can be public on GitHub Pages before launch without search engines indexing it.
-- **Switch:** `INDEXABLE` in `lib/site.ts`. While `false` (now), every page has `<meta name="robots" content="noindex, nofollow">` and `robots.txt` lists no sitemap. Crawling stays allowed so crawlers can read the noindex (blocking them in `robots.txt` would let the bare URL get listed anyway). The 404 page is always `noindex`.
-- **Launch day:** set `INDEXABLE = true`, push to `main` (the workflow redeploys), then submit `sitemap.xml` in Google Search Console and Bing Webmaster Tools and request indexing of the homepage.
+- **Switch:** `INDEXABLE` in `lib/site.ts`, **`true` since Nov 8, 2026 (launched)**. While `false`, every page has `<meta name="robots" content="noindex, nofollow">` and `robots.txt` lists no sitemap. Crawling stays allowed so crawlers can read the noindex (blocking them in `robots.txt` would let the bare URL get listed anyway). The 404 page is always `noindex`.
+- **Launch day (done Nov 8 for the code):** set `INDEXABLE = true`, push to `main` (the workflow redeploys). Still to do by hand: submit `sitemap.xml` in Google Search Console and Bing Webmaster Tools and request indexing of the homepage.
 - **Base path:** on `mysuperherosanta.github.io/superhero-santa/` the deploy builds with `BASE_PATH=/superhero-santa` (from `actions/configure-pages`; the Nov 7 check below used `/superherosantaclaus`, and the code is path-agnostic). Checked Nov 7: CSS, fonts, backdrop, the cast image, deferred images, and `site.js` loading GSAP/Lenis from `/superherosantaclaus/vendor/` all work, as does the form. After the custom domain is set, re-run the workflow so it rebuilds for `/`.
 - Canonical, Open Graph and JSON-LD URLs always point at `https://mysuperherosanta.com/`, so nothing needs changing at launch apart from the switch.
 
@@ -71,9 +71,7 @@ The site can be public on GitHub Pages before launch without search engines inde
 
 **In:** author **Steven L. Woodfield** and his bio (`#author`, and a `Person` node that the Book and BookSeries point to in `content/jsonld.json`); **nine** sleigh Reindeer; a **ten-minute** read; Book One **coming soon in print and ebook, fall 2027**; **currently a five-book series**. The author name was given as "Seven L. Woodfield" and read as a typo for Steven (the bio and everyone call him Steve/Steven), so confirm it.
 
-**Still placeholders** (dashed `[bracketed]` boxes: `class="ph"` inline, `.ph-box` blocks; search `content/home.html`):
-- **Author photo** (`.author-photo`): replace the box with an `<img>`, square, at least 520 px.
-- **One more FAQ** (`[A question parents often ask you]` / `[Your answer]`): when answered, also add it to the `FAQPage` node and to `public/llms.txt`.
+**Placeholders removed (Nov 8, owner's call):** the author photo box and the fifth FAQ are gone, along with the `.ph`/`.ph-box` styles. The author section is text only (`.author` is a single 820 px column). To add a photo later, bring back a two-column `.author` grid with an `<img>` (square, at least 520 px); a new FAQ also goes in the `FAQPage` node and `public/llms.txt`. The old markup is in git history (commit `5058969`).
 
 **Book One section** (`#book`) is just the cover and "Coming soon!" for now (the owner's call). When the details exist (exact release date, prices, page count, ISBN, retailers, a few interior spreads), bring back a facts list and add `datePublished`, `numberOfPages`, `isbn`, `bookFormat` and `offers` to the Book node. The earlier facts-list markup is in git history (commit `0fb106b`).
 
