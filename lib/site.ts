@@ -1,4 +1,4 @@
-export const SITE_URL = "https://superherosantaclaus.com";
+export const SITE_URL = "https://mysuperherosanta.com";
 
 /**
  * Pre-launch switch. While false, every page says <meta name="robots" content="noindex, nofollow"> and

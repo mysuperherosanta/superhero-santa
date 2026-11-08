@@ -1,4 +1,4 @@
-# Handoff — superherosantaclaus.com
+# Handoff — mysuperherosanta.com
 
 _Last updated 2026-11-07._ _First written 2026-10-18. Picks up from a long Cowork design session; this repo is now the source of truth._
 
@@ -7,8 +7,8 @@ _Last updated 2026-11-07._ _First written 2026-10-18. Picks up from a long Cowor
 - **Site:** Next.js 16 App Router, static export (`output: 'export'`) → `out/`. One page so far: `app/page.tsx` renders `content/home.html` verbatim; CSS in `public/css/site.css`, interactions in `public/js/site.js`, GSAP/Lenis self-hosted in `public/vendor/`, fonts self-hosted in `public/fonts/`, artwork in `public/assets/img/` (≈1.3 MB). Matches artifact preview **v35**. From here on, edit this repo, not the artifact. Verified: builds clean, no console errors, works at `/` and under `/superherosantaclaus/` base path.
 - **Repo:** [`mysuperherosanta/superhero-santa`](https://github.com/mysuperherosanta/superhero-santa), in the `mysuperherosanta` GitHub organization (moved there from the author's personal account so Nate, `n8patterson`, could be an admin). Pages is served from it at `https://mysuperherosanta.github.io/superhero-santa/` (public repo, **Settings → Pages → Source: GitHub Actions**), still `noindex` until launch.
 - **Hosting:** GitHub Pages via GitHub Actions (`.github/workflows/deploy.yml`; Settings → Pages → Source must be *GitHub Actions*). Base path comes from `actions/configure-pages`, so it switches automatically when the custom domain is added. Cost is the domain only (~$10–20/yr).
-- **Domain:** `superherosantaclaus.com`. DNS not pointed yet; registrar unknown. Set the custom domain in Settings → Pages only once DNS is pointed, then re-run the deploy workflow.
-- **Forms:** the `#join` form (first name, email, optional message) sends to the Superhero Santa Gmail inbox via FormSubmit (backlog #1). Every "Join" button scrolls to it. There is no hello@superherosantaclaus.com address; it was removed from the page and JSON-LD until a domain mailbox exists.
+- **Domain:** `mysuperherosanta.com`, registered Nov 8, 2026 at **Cloudflare** (Cloudflare DNS). Apex `A` records → GitHub Pages' four IPs and `www` `CNAME` → `mysuperherosanta.github.io`, all **DNS only (grey cloud)** so GitHub can issue and renew the HTTPS certificate. The custom domain is set in Settings → Pages; after setting or changing it, re-run the deploy workflow so the build uses an empty base path. (The earlier name, superherosantaclaus.com, was never registered.)
+- **Forms:** the `#join` form (first name, email, optional message) sends to the Superhero Santa Gmail inbox via FormSubmit (backlog #1). Every "Join" button scrolls to it. There is no hello@mysuperherosanta.com address; it was removed from the page and JSON-LD until a domain mailbox exists.
 
 ## Page map
 
@@ -65,7 +65,7 @@ The site can be public on GitHub Pages before launch without search engines inde
 - **Switch:** `INDEXABLE` in `lib/site.ts`. While `false` (now), every page has `<meta name="robots" content="noindex, nofollow">` and `robots.txt` lists no sitemap. Crawling stays allowed so crawlers can read the noindex (blocking them in `robots.txt` would let the bare URL get listed anyway). The 404 page is always `noindex`.
 - **Launch day:** set `INDEXABLE = true`, push to `main` (the workflow redeploys), then submit `sitemap.xml` in Google Search Console and Bing Webmaster Tools and request indexing of the homepage.
 - **Base path:** on `mysuperherosanta.github.io/superhero-santa/` the deploy builds with `BASE_PATH=/superhero-santa` (from `actions/configure-pages`; the Nov 7 check below used `/superherosantaclaus`, and the code is path-agnostic). Checked Nov 7: CSS, fonts, backdrop, the cast image, deferred images, and `site.js` loading GSAP/Lenis from `/superherosantaclaus/vendor/` all work, as does the form. After the custom domain is set, re-run the workflow so it rebuilds for `/`.
-- Canonical, Open Graph and JSON-LD URLs always point at `https://superherosantaclaus.com/`, so nothing needs changing at launch apart from the switch.
+- Canonical, Open Graph and JSON-LD URLs always point at `https://mysuperherosanta.com/`, so nothing needs changing at launch apart from the switch.
 
 ## Owner facts (Nov 7) and what's still to come
 

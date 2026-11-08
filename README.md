@@ -1,4 +1,4 @@
-# superherosantaclaus.com
+# mysuperherosanta.com
 
 Marketing site for the *Superhero Santa* picture-book series. **Next.js (App Router) static export**, hosted free on **GitHub Pages**. `next build` writes plain files to `out/`; a GitHub Action builds and deploys on every push to `main`.
 
@@ -44,11 +44,11 @@ The workflow reads the base path from GitHub Pages itself (`/superhero-santa` on
 
 ## Custom domain (when ready)
 
-1. DNS at the registrar for `superherosantaclaus.com`:
+1. DNS at the registrar (Cloudflare) for `mysuperherosanta.com`, every record **DNS only (grey cloud)**:
    - Apex `A` → `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
    - (optional `AAAA`) → `2606:50c0:8000::153`, `2606:50c0:8001::153`, `2606:50c0:8002::153`, `2606:50c0:8003::153`
-   - `www` `CNAME` → `OWNER.github.io`
-2. Settings → Pages → Custom domain: `superherosantaclaus.com`, then tick **Enforce HTTPS** once the certificate is issued. (With Actions deploys, no `CNAME` file is needed in the repo.)
+   - `www` `CNAME` → `mysuperherosanta.github.io`
+2. Settings → Pages → Custom domain: `mysuperherosanta.com`, then tick **Enforce HTTPS** once the certificate is issued. (With Actions deploys, no `CNAME` file is needed in the repo.)
 3. Re-run the deploy workflow so the build picks up the empty base path.
 4. Recommended: verify the domain under the owner's GitHub account (Settings → Pages → Verified domains).
 
