@@ -74,12 +74,9 @@
     if(e.target.closest('.ch,.hunt,#peek,a,button,.hero-copy'))return;
     if(window.puffSnow)window.puffSnow(e.clientX,e.clientY);audioOn();bell(1600,0,.06);});
 
-  /* nav */
-  var lastY=0;
+  /* nav: always visible (sticky); gains its frosted background once the page scrolls */
   function navState(y){
     nav.classList.toggle('scrolled',y>40);
-    if(y>lastY+6&&y>200)nav.classList.add('hide');else if(y<lastY-6)nav.classList.remove('hide');
-    lastY=y;
   }
 
   /* background shift by viewport middle */

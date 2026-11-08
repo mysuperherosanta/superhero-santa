@@ -38,7 +38,6 @@ html.no-js #pre,html.rm #pre{display:none}
 /* nav */
 nav{position:fixed;top:0;left:0;right:0;z-index:90;height:var(--nav-h);display:flex;align-items:center;justify-content:space-between;padding:0 var(--pad);color:var(--ink);transition:transform .5s var(--ease),background .4s,box-shadow .4s,height .4s var(--ease),color .4s}
 nav.scrolled{background:rgba(251,232,210,.86);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);box-shadow:0 1px 0 rgba(44,30,42,.08);height:64px}
-nav.hide{transform:translateY(-110%)}
 nav.on-ink{color:var(--cream)}
 nav.on-ink.scrolled{background:rgba(44,30,42,.82);box-shadow:0 1px 0 rgba(251,232,210,.12)}
 .brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:inherit}
