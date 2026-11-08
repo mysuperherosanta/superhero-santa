@@ -7,6 +7,24 @@
   var nav=document.getElementById('nav');
   var $$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s));};
 
+  /* deferred images (<img data-defer> in home.html -> data-src/data-srcset, see app/page.tsx).
+     They wait until 1s after window load, so the hero has the connection to itself, or load sooner
+     if the visitor scrolls within 400px of one. (On a fast connection `load` can fire before the hero's
+     first paint, hence the extra second.) Once restored they keep loading="lazy", so the browser still
+     fetches far-away ones on its own schedule.
+     This runs before the reduced-motion / no-GSAP early return below, so every path gets its images. */
+  (function(){
+    var held=$$('img[data-src]');if(!held.length)return;
+    function show(img){var s=img.getAttribute('data-src');if(!s)return;
+      var ss=img.getAttribute('data-srcset');if(ss)img.setAttribute('srcset',ss);
+      img.setAttribute('src',s);img.removeAttribute('data-src');img.removeAttribute('data-srcset');}
+    var io=('IntersectionObserver' in window)?new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){io.unobserve(e.target);show(e.target);}});},{rootMargin:'400px 0px'}):null;
+    if(io)held.forEach(function(i){io.observe(i);});
+    function all(){if(io)io.disconnect();held.forEach(show);}
+    function later(){setTimeout(all,1000);}
+    if(document.readyState==='complete')later();else window.addEventListener('load',later);
+  })();
+
   /* snow sparkles on the ground */
   var sp=document.getElementById('sparkles');
   if(sp){for(var q=0;q<34;q++){var d=document.createElement('i');d.style.left=(Math.random()*100)+'%';d.style.top=(Math.random()*100)+'%';d.style.animationDelay=(Math.random()*3.2)+'s';sp.appendChild(d);}}
@@ -26,7 +44,7 @@
   function audioOn(){if(!actx&&AC){try{actx=new AC();}catch(e){}}if(actx&&actx.state==='suspended')actx.resume();}
   document.addEventListener('pointerdown',audioOn,{once:true});
   var sfxBtn=document.getElementById('sfx');
-  if(sfxBtn)sfxBtn.addEventListener('click',function(){muted=!muted;sfxBtn.classList.toggle('muted',muted);sfxBtn.setAttribute('aria-pressed',String(!muted));sfxBtn.setAttribute('aria-label',muted?'Turn sounds on':'Turn sounds off');if(!muted){audioOn();jingle();}});
+  if(sfxBtn)sfxBtn.addEventListener('click',function(){muted=!muted;sfxBtn.classList.toggle('muted',muted);sfxBtn.setAttribute('aria-pressed',String(!muted));if(!muted){audioOn();jingle();}});
 
   /* ── the cast: tap to talk ── */
   function say(ch,txt){var b=ch.querySelector('.say');if(!b)return;b.textContent=txt||ch.getAttribute('data-say');b.style.setProperty('--nx','0px');
@@ -34,8 +52,14 @@
     var r=b.getBoundingClientRect(),pad=12,nx=0;if(r.left<pad)nx=pad-r.left;else if(r.right>window.innerWidth-pad)nx=window.innerWidth-pad-r.right;if(nx)b.style.setProperty('--nx',nx+'px');
     clearTimeout(ch._t);ch._t=setTimeout(function(){ch.classList.remove('talk');},2400);
     if(window.gsap&&!rm){var f=ch.querySelector('.fig');gsap.fromTo(f,{y:0,scaleX:1,scaleY:1},{keyframes:[{scaleX:1.08,scaleY:.9,duration:.12},{y:-34,scaleX:.96,scaleY:1.06,duration:.28,ease:'power2.out'},{y:0,scaleX:1.06,scaleY:.94,duration:.3,ease:'bounce.out'},{scaleX:1,scaleY:1,duration:.15}]});}}
+  // the bubbles are aria-hidden; a tap or keypress reads the line out once through #saylive
+  var saylive=document.getElementById('saylive');
+  function announce(ch){if(!saylive)return;var who=(ch.getAttribute('aria-label')||'').replace(/^Say hello to /,'');
+    who=who.charAt(0).toUpperCase()+who.slice(1);saylive.textContent='';setTimeout(function(){saylive.textContent=who+': '+ch.getAttribute('data-say');},60);}
+  function talk(ch){if(ch===deerEl&&!found.deer)return;audioOn();boing();say(ch);announce(ch);}
   $$('.ch').forEach(function(ch){
-    ch.addEventListener('click',function(){if(ch===deerEl&&!found.deer)return;audioOn();boing();say(ch);});
+    ch.addEventListener('click',function(){talk(ch);});
+    ch.addEventListener('keydown',function(e){if(ch.getAttribute('role')!=='button')return;if(e.key==='Enter'||e.key===' '){e.preventDefault();talk(ch);}});
     ch.addEventListener('mouseenter',function(){if(ch!==deerEl||found.deer)say(ch);});});
 
   /* ── hidden-object hunt: reindeer, candy cane, golden star ── */
@@ -52,14 +76,17 @@
       if(window.confettiBurst){var r=counter.getBoundingClientRect();window.confettiBurst(r.left+r.width/2,r.top);setTimeout(function(){window.confettiBurst(window.innerWidth*.3,window.innerHeight*.4);},220);}
       $$('.ch').forEach(function(ch,i){setTimeout(function(){say(ch,CHEER[i%CHEER.length]);},i*260);});}}
   function findDeer(){if(found.deer)return;
-    deerEl.classList.add('found');document.getElementById('hero').classList.add('found-deer');if(peek)peek.remove();
+    deerEl.classList.add('found');document.getElementById('hero').classList.add('found-deer');
+    deerEl.setAttribute('role','button');deerEl.setAttribute('tabindex','0');deerEl.setAttribute('aria-label','Say hello to the Reindeer');
+    if(peek){if(document.activeElement===peek)deerEl.focus({preventScroll:true});peek.remove();}
     if(window.gsap&&!rm){gsap.to(deerEl,{yPercent:-4,duration:.7,ease:'back.out(2.2)',onComplete:function(){say(deerEl);}});}else{deerEl.style.transform='none';say(deerEl);}
     score('deer','You found the Reindeer!');}
   if(peek)peek.addEventListener('click',findDeer);
   if(deerEl)deerEl.addEventListener('click',function(){if(!found.deer)findDeer();});
   ['cane','star'].forEach(function(k){
     var el=document.getElementById(k==='cane'?'cane':'gstar');if(!el)return;
-    el.addEventListener('click',function(){el.classList.add('got');
+    el.addEventListener('click',function(){if(found[k])return;el.classList.add('got');el.setAttribute('aria-disabled','true');
+      el.setAttribute('aria-label',k==='cane'?'Candy cane: found':'Golden star: found');
       if(window.confettiBurst){var r=el.getBoundingClientRect();window.confettiBurst(r.left+r.width/2,r.top+r.height/2);}
       score(k,k==='cane'?'A lost candy cane!':'The star is lit!');});});
 
@@ -104,7 +131,9 @@
   gsap.registerPlugin(ScrollTrigger);
   var lenis=(typeof Lenis!=='undefined')?new Lenis({lerp:.09,smoothWheel:true}):null;
   if(lenis){lenis.on('scroll',ScrollTrigger.update);gsap.ticker.add(function(t){lenis.raf(t*1000);});gsap.ticker.lagSmoothing(0);
-    $$('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){var id=a.getAttribute('href');var t=id.length>1&&document.querySelector(id);if(t){e.preventDefault();lenis.scrollTo(t,{offset:-60});}});});}
+    $$('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){var id=a.getAttribute('href');var t=id.length>1&&document.querySelector(id);if(t){e.preventDefault();lenis.scrollTo(t,{offset:-60});
+      // keyboard users carry on from the section they jumped to, as with a native anchor jump
+      if(!t.hasAttribute('tabindex'))t.setAttribute('tabindex','-1');t.focus({preventScroll:true});}});});}
   window.addEventListener('scroll',onScroll,{passive:true});
   if(lenis)lenis.on('scroll',function(){onScroll();});
   onScroll();
@@ -154,15 +183,32 @@
     var pathEl=document.querySelector('#trail .path');
     // the rail's slide spans the whole pin (prints fade in within it), so the section releases as soon as the last card lands
     var tl=gsap.timeline({scrollTrigger:{trigger:'#trail',start:'top top',end:function(){return '+='+(rail.scrollWidth-window.innerWidth+60);},pin:true,scrub:.6,anticipatePin:1,invalidateOnRefresh:true}});
+    trailST=tl.scrollTrigger;
     tl.to(rail,{x:function(){return -(rail.scrollWidth-window.innerWidth);},ease:'none',duration:1},0)
       .fromTo('#marker',{x:0},{x:function(){return pathEl.getBoundingClientRect().width;},ease:'none',duration:1},0)
       .to('#trail .print',{opacity:1,stagger:.08,ease:'none',duration:.3},0.05);
     return tl;
   }
+  var trailST=null;
   ScrollTrigger.matchMedia({
-    '(min-width:901px)':function(){buildTrail();},
+    '(min-width:901px)':function(){buildTrail();return function(){trailST=null;};},
     '(max-width:900px)':function(){gsap.set('#trail .print',{opacity:1});gsap.fromTo('#marker',{x:0},{x:function(){return document.querySelector('#trail .path').getBoundingClientRect().width-60;},ease:'none',scrollTrigger:{trigger:'#trail',start:'top 70%',end:'bottom 40%',scrub:.5}});}
   });
+
+  /* keyboard in the pinned trail: tabbing to a card scrolls the page to the point where the rail shows it.
+     Without this the browser scrolls the clipped .pin sideways to reveal the card, and the pin never undoes it. */
+  (function(){
+    var pin=document.querySelector('#trail .pin'),rail=document.getElementById('rail');if(!pin||!rail)return;
+    pin.addEventListener('scroll',function(){if(trailST&&pin.scrollLeft)pin.scrollLeft=0;});
+    pin.addEventListener('focusin',function(e){
+      var fr=e.target.closest('.frame');if(!trailST||!fr)return;
+      var max=rail.scrollWidth-window.innerWidth;if(max<=0)return;
+      var at=fr.getBoundingClientRect().left-rail.getBoundingClientRect().left;
+      var want=Math.max(0,Math.min(max,at+fr.offsetWidth/2-window.innerWidth/2));
+      var y=trailST.start+(trailST.end-trailST.start)*(want/max);
+      requestAnimationFrame(function(){pin.scrollLeft=0;if(lenis)lenis.scrollTo(y,{immediate:true});else window.scrollTo(0,y);});
+    });
+  })();
 
   /* the reason: star rises */
   gsap.from('#bigstar',{y:70,scale:.6,transformOrigin:'50% 50%',opacity:0,ease:'expo.out',duration:1.2,scrollTrigger:{trigger:'#reason',start:'top 70%'}});
@@ -200,10 +246,12 @@
     var f=document.getElementById('signup');if(!f)return;
     var msg=document.getElementById('su-msg'),btn=document.getElementById('joinbtn'),email=document.getElementById('su-email');
     function show(t,kind){msg.textContent=t;f.classList.remove('ok','err');if(kind)f.classList.add(kind);}
+    email.setAttribute('aria-describedby','su-msg');
+    email.addEventListener('input',function(){email.removeAttribute('aria-invalid');});
     f.addEventListener('submit',function(e){
       e.preventDefault();
       if(f.elements._honey.value)return;
-      if(!email.value.trim()||!email.checkValidity()){show('Please enter a valid email address.','err');email.focus();return;}
+      if(!email.value.trim()||!email.checkValidity()){email.setAttribute('aria-invalid','true');show('Please enter a valid email address.','err');email.focus();return;}
       btn.disabled=true;f.classList.add('busy');show('Adding you to the list…');
       var data={};new FormData(f).forEach(function(v,k){data[k]=v;});
       var hasMsg=!!(data.message&&data.message.trim());

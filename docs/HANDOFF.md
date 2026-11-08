@@ -1,10 +1,10 @@
 # Handoff — superherosantaclaus.com
 
-_Last updated 2026-10-17. Picks up from a long Cowork design session; this repo is now the source of truth._
+_Last updated 2026-11-07._ _First written 2026-10-18. Picks up from a long Cowork design session; this repo is now the source of truth._
 
 ## Where things stand
 
-- **Site:** Next.js 16 App Router, static export (`output: 'export'`) → `out/`. One page so far: `app/page.tsx` renders `content/home.html` verbatim; CSS in `public/css/site.css`, interactions in `public/js/site.js`, GSAP/Lenis self-hosted in `public/vendor/`, artwork in `public/assets/img/` (≈1.3 MB). Matches artifact preview **v35**. From here on, edit this repo, not the artifact. Verified: builds clean, no console errors, works at `/` and under `/superherosantaclaus/` base path.
+- **Site:** Next.js 16 App Router, static export (`output: 'export'`) → `out/`. One page so far: `app/page.tsx` renders `content/home.html` verbatim; CSS in `public/css/site.css`, interactions in `public/js/site.js`, GSAP/Lenis self-hosted in `public/vendor/`, fonts self-hosted in `public/fonts/`, artwork in `public/assets/img/` (≈1.3 MB). Matches artifact preview **v35**. From here on, edit this repo, not the artifact. Verified: builds clean, no console errors, works at `/` and under `/superherosantaclaus/` base path.
 - **Repo:** local only. **Not pushed yet.** Plan: the friend (author) owns the GitHub repo and adds Nate as a collaborator; see `OWNER-TODO.md`.
 - **Hosting:** GitHub Pages via GitHub Actions (`.github/workflows/deploy.yml`; Settings → Pages → Source must be *GitHub Actions*). Base path comes from `actions/configure-pages`, so it switches automatically when the custom domain is added. Cost is the domain only (~$10–20/yr).
 - **Domain:** `superherosantaclaus.com`. DNS not pointed yet; registrar unknown. Set the custom domain in Settings → Pages only once DNS is pointed, then re-run the deploy workflow.
@@ -68,7 +68,7 @@ Images were generated with Higgsfield (`gpt_image_2_5`) and background-removed t
 2. **Hero fixes and story copy: done 2026-10-17** (see "Oct 17 changes" below). The owner still hasn't sent his own "few small things" list; ask for it.
 2c. **Character pages (later):** each search-party card should click through to its own page, with games/activities per character.
 3. ~~Collapse the hero CSS override stack~~ — done Oct 18 (see "Where it lives in `site.css`").
-4. **Performance:** add `width`/`height` to all `<img>` in `content/home.html`, `loading="lazy"` below the fold, `fetchpriority="high"` on the hero layers; consider `<picture>` with a smaller backdrop for phones. Target LCP < 2 s on mobile.
+4. **Performance:** first pass done Oct 18 (see "Performance + accessibility pass" below). Second pass done Nov 7 (see "Mobile LCP pass" below): the runtime strip and deferred images take mobile Lighthouse LCP from 4.5 s to 3.2 s. Getting under 2.5 s now needs a design call (fonts or a lighter phone hero).
 5. **Share image:** done (`og-image.jpg`). Redo it with the title lettered in once the cover type is final.
 6. **Analytics + Search Console:** add the Cloudflare Web Analytics snippet (free, no cookie banner); verify the domain in Google Search Console and Bing Webmaster Tools and submit `sitemap.xml` once DNS is live. For GEO, the biggest remaining win is facts only the owner has: author name and bio, release date, page count, price and ISBN, on the page and in `jsonld.json`.
 7. **More pages** (normal App Router routes in TSX; first candidates: `/characters/[slug]` via `generateStaticParams`, linked from the search-party cards) from the SEO plan in `docs/private/` (parent guide, /for-churches, character pages, printables). Each gets its own canonical, JSON-LD and sitemap entry.
@@ -92,7 +92,7 @@ Images were generated with Higgsfield (`gpt_image_2_5`) and background-removed t
 - **Short desktop screens** (`min-width:901px` and `max-height:700px`): the "Read about the book" button is hidden; it landed on the cast's heads.
 - **Hero ground pass:** the boy, girl and Reindeer no longer move separately from the cast (no scene parallax at all; the scroll "sink" on `.ch` is gone). Below 900px the candy cane stands in the snow just left of the boy (`left: cx − .04cs`, sized from `--cs`). It sits above him at z 10 so it stays clickable (his transparent box would otherwise swallow taps), with its base masked into the bank and an outline so its white stripes read against the snow. They all stand on one continuous snowbank, and the snowdrift sits on the bank with its base faded in. The Reindeer's peek bob moved to `.ch-deer .fig` (a CSS animation on `.ch-deer` itself would override GSAP's parallax transform), and "found" lifts it only `yPercent:-4`, so its legs end inside the snowdrift (its baked snow mound was removed from `hero-reindeer.webp`; `.ch-deer.found/.talk` stay at z 9, behind the drift). "Tap the snowdrift!" is anchored on the drift's centre (`cx + 1.98cs`) and clears the girl's head. The "?" rides above the antlers. `hero-boy`/`hero-girl` have their baked snow faded out under the bank (`fadebase.py`). Added `app/icon.svg` (favicon from the shield mark).
 - **Luxury pass (v37; now folded into each section's rules):**
-  - **Type:** Fraunces now loads its full variable range plus italics (`layout.tsx`). Headings are weight 600, softness 30, with italic 500 accents.
+  - **Type:** headings are Fraunces weight 600, softness 30, with italic 500 accents. (Since Oct 18 the fonts are self-hosted subsets; see the perf pass below.)
   - **Gold:** `--gold` / `--gold-soft` for rules, fills and text on dark sections; `--gold-ink` (#7A5518, 4.5:1 or better) for small text on light backgrounds.
   - **Sections:** the peach sections are now champagne (#EED3B6) and "What's inside" is deep evergreen (#1F3A2F). The `data-bg` values in `home.html` match, and the nav switches to light text over evergreen.
   - **Components:** hero stickers became one quiet line of facts; buttons are cranberry with a lit top edge and offset shadow; the reason star is a gold gradient (`#goldstar`); the series shows Book One large with the two follow-ons stacked beside it.
@@ -118,6 +118,122 @@ Images were generated with Higgsfield (`gpt_image_2_5`) and background-removed t
   - **Images:** every `<img>` has `width`/`height`, below-the-fold images lazy-load, the stable and cast layers get `fetchpriority=high`, and the backdrop is preloaded. The hero's mini cover uses a 280px thumbnail (36 KB instead of 259 KB).
 - **Hero CSS stack (#3):** collapsed Oct 18 into one hero block; v37/v38 were folded into the section rules at the same time. `site.css` went from 1117 to 454 lines with no visual change.
 - **Dead hero markup removed (Nov 7):** the old painted-canyon sky (`.aurora`, `#stars`, `.sun`, `.cloud`s, `.mesa`s, `.ground`, the nativity `.glow`/`.drift`, the hidden `.castlabel`) is gone from `home.html`, along with the `display:none` rule that hid it, the `#stars` generator and the `[data-depth]` pointer parallax in `site.js`, and the `.hint` target of the intro tween. Also dropped CSS with no matching markup: `.frame.f-santa/.f-elves/.f-deer/.f-canyon`, `#join .mail`, `.mark .sh/.st`, and `.frame.f-char.turned`. Screenshots match the previous build at 1440×900, 1280×720, 820×1180 and 390×844 (hero, found Reindeer, talking elf boy, full page), with no console errors.
+
+## Performance + accessibility pass (Oct 18)
+
+Measured on a real build (`npm run build && npx serve out`), Lighthouse 13 in headless Chrome, median of 3 runs before / 5 after. Mobile is Lighthouse's default simulated Slow 4G + 4× CPU on a Moto G-sized screen.
+
+| | Mobile before | Mobile after | Desktop before | Desktop after |
+|---|---|---|---|---|
+| Performance | 76 | 82 | 96 | 99 |
+| Accessibility | 96 | 100 | 96 | 100 |
+| Best Practices | 96 | 100 | 96 | 100 |
+| SEO | 100 | 100 | 100 | 100 |
+| LCP | 5.6 s | 4.5 s | 1.0 s | 0.9 s |
+| CLS | 0.009 | 0.014 | 0.001 | 0.004 |
+| TBT | 8 ms | 9 ms | 0 ms | 0 ms |
+| Speed Index | 4.4 s | 3.3 s | 1.5 s | 1.2 s |
+| Page weight | 1,174 KB | 699 KB | 1,327 KB | 951 KB |
+
+axe-core (WCAG 2.0–2.2 A/AA + best practice) at 1440×900, 390×844 and 1440×900 with reduced motion: **0 violations** (before: footer label contrast 4.32:1).
+
+**Performance changes**
+- **Fonts are self-hosted** (`public/fonts/`, `@font-face` at the top of `site.css`, `font-display: swap`): no Google Fonts CSS (it was render-blocking) and no third-party origins. Latin subsets with the axes trimmed to what the page uses: Fraunces roman wght 400–700 / opsz 30–144 / SOFT 30–60, Fraunces italic pinned to the only style used (500, opsz 144, SOFT 60), Nunito 400–700. 308 KB → 139 KB. Rebuild with `design-src/scripts/subset-fonts.sh`; widen its ranges if the CSS starts using other weights or axis values (anything outside is clamped).
+- **Hero layers have `srcset`** (520 px and 900 px tall copies beside the 1447 px originals; `sizes` follows the `--cs` formula). Phones and 1× desktops now load ~110 KB of layers instead of ~300 KB. Regenerate with `python3 design-src/scripts/hero-variants.py` whenever a hero layer changes.
+- **Phone backdrop:** portrait screens ≤900 px wide use `hero-backdrop-phone.webp`, the centre 544 px of the backdrop (32 KB vs 94 KB). The hero only ever shows ~36% of the backdrop's width there, so it's pixel-identical (diffed at 390 and 820). The media query is in two places: the end of `site.css` and the preloads in `layout.tsx`. If the backdrop sizing (`--bgh`) changes on phones, recheck that the crop is still wide enough.
+- `book-one-spread.jpg` → `.webp` (145 → 115 KB). The mini cover in the hero is lazy (it's `display:none` on phones, which no longer downloads it). The 1×1 `data:` GIF hit areas became `assets/img/hit.svg`.
+- Already fine: GSAP, ScrollTrigger, Lenis and `site.js` are `defer`red and TBT is ~0. `book-one-cover.jpg` (253 KB) is only referenced by JSON-LD, never loaded by the page, and re-encoding it saves nothing (already well compressed).
+
+**Why mobile LCP was still 4.5 s after this pass (target was 2.5 s; both levers below shipped Nov 7, see "Mobile LCP pass"):** the LCP element is the hero itself (backdrop), which paints at ~110 ms unthrottled; the simulated number is driven by everything fetched in that window. FCP alone is ~2.0 s (HTML + CSS under Slow 4G). Measured experiments on a copy of `out/`:
+- stripping the Next.js runtime (the page hydrates nothing; 133 KB of JS + ~55 KB of inline RSC payload in `index.html`) → **3.8 s**;
+- plus deferring the below-the-fold `loading="lazy"` images (the story Reindeer and the trail cards sit inside Chrome's 1250 px lazy-load distance on phones, ~200 KB) → **3.2 s**.
+The rest is fonts (139 KB) and the hero art. Getting under 2.5 s would take a design call (e.g. pinning Fraunces to one optical size, or a lighter phone hero). Real 4G phones will be well under the simulated figure.
+
+**Accessibility changes**
+- **The cast is keyboard-operable:** Santa, Mrs. Claus, the elf, the boy and the girl are `role="button"` with `tabindex="0"` and names ("Say hello to Santa Claus"); Enter/Space make them talk. The spoken line is read once through a visually hidden live region (`#saylive`); the bubbles stay `aria-hidden`. Hover still shows the bubble without announcing it.
+- **Hidden-object hunt:** finding the Reindeer turns it into a "Say hello to the Reindeer" button and moves focus to it (the `#peek` button is removed). Found items get `aria-disabled` and a "…: found" label. `#counter` (`aria-live`) announces progress as before.
+- **Pinned trail:** each character card is focusable (focus turns it around, like hover). Tabbing into the pinned rail used to scroll `.pin` sideways and leave the trail broken; now the page scrolls to the point where the rail shows the focused card, and `.pin` is held at `scrollLeft 0`.
+- **Nav:** focus inside the nav un-hides it (it was hidden off-screen after scrolling down). With Lenis, in-page links now also move focus to the target section (`tabindex=-1`), as a native jump would.
+- **Sound toggle** has a fixed name ("Sound effects") with state in `aria-pressed` (the label used to change too).
+- **Form:** a bad email sets `aria-invalid` and is described by the status message.
+- **Contrast / focus:** footer labels .6 → .75 opacity (4.32:1 → AA); focus rings are gold instead of red in the footer and the dark nav, where red was under 3:1. Mrs. Claus's hit area sits above her neighbours so it keeps a 24 px target on phones (stacking only).
+- Checked and fine: focus order (nav → cast → hunt → copy/CTAs → trail → form → footer), visible focus everywhere, every control named, `prefers-reduced-motion` (no preloader, snow, parallax, reveals or pin; the trail becomes a native horizontal scroller).
+- Known gap: on phones the candy cane's focus ring is clipped at the left edge (the cane sits at `cx − .04cs`); it's still visible on three sides.
+
+## Mobile LCP pass (Nov 7)
+
+Two changes, both kept because the numbers justify them. Measured on a real build served with `npx serve`, Lighthouse 13.6 in headless Chrome, **median of 5 runs** per column. Mobile = Lighthouse's default simulated Slow 4G + 4× CPU.
+
+| | Mobile before | Strip only | Defer only¹ | **Mobile after** | Desktop before | **Desktop after** |
+|---|---|---|---|---|---|---|
+| Performance | 84 | 88 | 86 | **93** | 98 | **99** |
+| Accessibility | 100 | 100 | 100 | **100** | 100 | **100** |
+| Best Practices | 100 | 100 | 100 | **100** | 100 | **100** |
+| SEO | 100 | 100 | 100 | **100** | 100 | **100** |
+| LCP | 4.50 s | 3.76 s | 4.13 s | **3.16 s** | 0.93 s | **0.73 s** |
+| FCP | 0.80 s | 1.22 s | 0.80 s | **0.65 s** | 0.33 s | **0.29 s** |
+| CLS | 0.014 | 0.000 | 0.014 | **0.014** | 0.004 | **0.004** |
+| TBT | 7 ms | 0 ms | 7 ms | **0 ms** | 0 ms | **0 ms** |
+| Speed Index | 3.15 s | 3.22 s | 3.17 s | **2.87 s** | 1.21 s | **1.18 s** |
+| Page weight | 699 KB | 558 KB | 700 KB | **559 KB** | 951 KB | **811 KB** |
+
+¹ "Defer only" released the images at `load` (the first version). Released at `load`, the deferral added nothing on top of the strip (3.76 s either way). Releasing them 1 s after `load` is what reached 3.16 s; see below. Page weight doesn't fall with the deferral because the images still load inside Lighthouse's trace, just after the hero.
+
+The 5-run LCPs were within ±5 ms of each other (Lantern simulation is deterministic given the trace), so the medians are solid. Target was LCP < 2.5 s: **not reached**. CLS target < 0.05 is met.
+
+**1. Runtime strip (`scripts/strip-runtime.mjs`, runs inside `npm run build`)**
+- The homepage hydrates nothing: it's `content/home.html` rendered verbatim, and all behaviour is `site.js` + GSAP/Lenis. Yet the export shipped ~133 KB of `/_next/static/chunks` JS plus ~55 KB of inline RSC payload (`self.__next_f.push(…)`). The script deletes, from an explicit allowlist (`PAGES`: `index.html`, `404.html`, `404/index.html`):
+  - every `<script src=".../_next/...">`;
+  - `<link rel="preload|modulepreload" as="script">` pointing at `/_next/`;
+  - the inline `__next_f` / `TURBOPACK` bootstrap scripts.
+- Everything else stays: CSS, metadata, image/style preloads, JSON-LD, GSAP, Lenis and `site.js`. `index.html` goes from 102 KB to 43 KB.
+- It fails the build if a listed page is missing, if any `/_next/` script or `__next_f` survives, or if the homepage loses JSON-LD, `site.js` or `site.css`. A Next upgrade that changes the output shape stops the deploy instead of shipping a half-stripped page.
+- `.github/workflows/deploy.yml` already runs `npm run build`, so it picks this up with no workflow change. Base-path builds (`BASE_PATH=/superherosantaclaus npm run build`) were checked too: the `/superherosantaclaus/_next/` URLs are stripped the same way, and the page works under the prefix.
+- **Trade-off:** on a stripped page React never runs. Client components, hooks and `<Link>` client-side navigation don't work there (a `<Link>` still renders an `<a>`, so it degrades to a normal full-page link). A future page that needs React interactivity simply stays off `PAGES`. Its `/_next/` chunks are still emitted, because only the listed HTML files are edited. `next dev` always loads the runtime, so judge stripped pages from a build.
+- The `out/**/index.txt` / `__next.*.txt` RSC files are left in place: harmless, and a non-stripped page `<Link>`ing to `/` would use them.
+
+**2. Deferred below-the-fold images (`data-defer`)**
+- On phones the story Reindeer and the trail card images sit inside Chrome's 1250 px lazy-load distance, so `loading="lazy"` still fetched ~200 KB while the hero was loading.
+- In `content/home.html` the 16 below-the-fold `<img>` (story Reindeer, trail marker, trail cards front+side, walker, Book One spread) carry `data-defer`. The hero's mini cover doesn't: it's visible on desktop.
+- At build time `app/page.tsx` rewrites each into `data-src`/`data-srcset` and adds a `<noscript>` copy of the original tag.
+- `site.js` (top of the file, before the reduced-motion/no-GSAP early return, so every path gets images) restores `src`/`srcset`:
+  - **1 s after `window.load`**, or
+  - earlier for any image the visitor scrolls within 400 px of (IntersectionObserver).
+
+  Restored images keep `loading="lazy"`, so far-away trail cards still wait for the browser's own lazy-load distance.
+- **Why 1 s after `load`, not at `load`:** unthrottled, `load` fired at ~60–80 ms but the LCP frame painted at ~110–140 ms. Images released at `load` were still requested before LCP, so the simulation counted them (no gain). On real slow connections `load` already comes after the hero, so the extra second costs nothing visible. The story Reindeer starts ~650 px below the fold on a 412×823 phone, outside the 400 px observer margin.
+- **Layout:** `width`/`height` stay on the held `<img>`, so its box is identical before and after the swap (checked for all 16 at 1440, 820 and 390; the only change is a 1 px rounding on the trail marker). CLS is unchanged at 0.014.
+- **CSS (end of `site.css`):** `img[data-src]{color:transparent}` hides alt text in the empty box. `@media (scripting:none){img[data-src]{display:none!important}}` hides the held copy when JS is off, so the `<noscript>` copy shows instead. It needs `!important` because `.card .art img{display:block}` is more specific.
+- **No-JS check:** with JavaScript disabled, all 16 images load from the `<noscript>` copies and no held copy is visible.
+
+**Verification (final build)**
+- **Browsers and modes:** Playwright + Chrome at 1440×900, 820×1180 (touch), 390×844 (touch), 1440×900 with reduced motion, and 390×844 with JS off, at `/` and under `/superherosantaclaus/`.
+- **Console:** no errors or warnings on the homepage. No `/_next/` script and no `__next_f`/`TURBOPACK` global remain.
+- **Deferral:** no deferred image is requested before `load`, and none is still held 2.5 s after it.
+- **Interactions:**
+  - Hunt: all 3 items found and the counter updates.
+  - Cast: tapping a member speaks through `#saylive`.
+  - Nav: the Lenis jump to `#series` works.
+  - Trail: the desktop pin slides the rail, and the phone marker works.
+  - Form (FormSubmit request intercepted, nothing sent): a bad email sets `aria-invalid`, and a good one shows the thank-you.
+- **Visuals:** full-page screenshots with reduced motion, before vs after, are the same height at all three widths. The only differing pixels are the randomised snow sparkles. Normal-motion section shots (story, trail, series) show every deferred image.
+- **axe-core 4.14** (WCAG 2.0–2.2 A/AA + best practice): 0 violations at 390×844. At 1440×900 (and with reduced motion) it reports one `label-content-name-mismatch` on the nav brand link (`aria-label="Superhero Santa — home"`). That is **identical on the Oct 18 baseline build**, so it isn't from this pass. It's likely a rule the Oct 18 axe run didn't include; see follow-ups.
+
+**What's left between 3.2 s and 2.5 s.** Unthrottled, the hero paints at ~140 ms. In the simulation, everything requested before that competes for the Slow 4G link:
+- the three fonts (136 KB, VeryHigh priority);
+- the hero layers + phone backdrop (~127 KB);
+- GSAP/ScrollTrigger/Lenis/site.js (~60 KB, `defer`).
+
+Options, all needing a decision:
+- subset Fraunces roman further (pin `opsz`/`SOFT`, ~93 KB today);
+- load GSAP/ScrollTrigger only after the hero paints (the intro animation would start later);
+- a lighter phone hero.
+
+**Follow-ups found (not fixed here)**
+- **Reduced motion skips the form's AJAX:** `site.js` returns early for reduced motion / no GSAP before the form wiring. The `#join` form then does a plain POST to FormSubmit and leaves the site (still works, but no in-place thank-you). Moving the form block above the early return would fix it.
+- **404 console error:** `site.js` and GSAP load on the 404 page too (they're in `layout.tsx`) and throw `Cannot read properties of null (reading 'addEventListener')` at `nav.addEventListener('focusin', …)` (there's no `#nav` on the 404). Same on the baseline. Either load the scripts only on the homepage or make `site.js` bail out when `#hero` is missing.
+- **axe nav brand:** the `label-content-name-mismatch` above. The visible text also includes the tagline ("Picture books · Book One coming soon"), which the `aria-label` leaves out. Drop the `aria-label` (the visible text is a fine name) or include the tagline. The footer brand link has the same pattern.
+- `layout.tsx`'s two backdrop `<link rel="preload">` appear twice in the HTML (Next hoists a copy). The browser dedupes same-URL preloads, so it's cosmetic.
 
 ## Private docs (gitignored, `docs/private/`)
 
