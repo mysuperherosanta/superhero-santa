@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { SITE_URL, asset } from "@/lib/site";
+import { INDEXABLE, SITE_URL, asset } from "@/lib/site";
 
 const TITLE = "Superhero Santa: Christ-Centered Christmas Books for Toddlers";
 const DESCRIPTION =
@@ -18,7 +18,10 @@ export const metadata: Metadata = {
   applicationName: "Superhero Santa",
   category: "books",
   alternates: { canonical: "/" },
-  robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 } },
+  // pre-launch: noindex everywhere until INDEXABLE is flipped in lib/site.ts
+  robots: INDEXABLE
+    ? { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 } }
+    : { index: false, follow: false, googleBot: { index: false, follow: false } },
   openGraph: {
     type: "website",
     url: "/",

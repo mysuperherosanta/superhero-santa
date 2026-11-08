@@ -1,8 +1,9 @@
 import type { MetadataRoute } from "next";
-import { SITE_URL } from "@/lib/site";
+import { INDEXABLE, SITE_URL } from "@/lib/site";
 
 export const dynamic = "force-static";
 
 export default function robots(): MetadataRoute.Robots {
-  return { rules: [{ userAgent: "*", allow: "/" }], sitemap: `${SITE_URL}/sitemap.xml` };
+  // crawling stays allowed either way so crawlers can read the noindex; the sitemap is only advertised once indexable
+  return { rules: [{ userAgent: "*", allow: "/" }], ...(INDEXABLE ? { sitemap: `${SITE_URL}/sitemap.xml` } : {}) };
 }

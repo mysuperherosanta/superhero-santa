@@ -20,7 +20,10 @@ _Last updated 2026-11-07._ _First written 2026-10-18. Picks up from a long Cowor
 | `#fun` | What's inside (kid-facing cards) |
 | `#reason` | "Santa is the helper. Christmas has a hero." — faith message |
 | `#series` | Three series cards; card 1 (Book One) has the book-one spread full-bleed across its top |
-| `#join` | Launch-list CTA |
+| `#book` | Book One at a glance: cover, facts list, three page-spread slots (placeholders) |
+| `#author` | About the author (placeholders) |
+| `#faq` | Questions parents ask (`<details>`; two answers still have placeholders) |
+| `#join` | Launch-list form |
 
 **Interactions (`public/js/site.js`):** no splash screen; on load only the headline and hero copy animate in, while the whole cast (stable, baked Santa/Mrs. Claus/elf, boy, girl) shows at once; Lenis smooth scroll; tap a character → speech bubble from `data-say`; hidden-object hunt (candy cane `#cane`, star `#gstar`, peeking Reindeer `#deer`/`#peek`) with counter `#counter` and confetti `#conf`; sound toggle `#sfx`; `prefers-reduced-motion` respected.
 
@@ -55,6 +58,23 @@ All hero layers are positioned on one virtual canvas:
 | `scripts/gapfix.py`, `gapfill.py` | Oct 17 sliver cleanup (numpy + Pillow only). `gapfix` makes light gaps transparent (cast, elf boy); `gapfill` fills gaps inside the opaque stable by cloning nearby straw/wood or blending across the gap. Exact runs below. |
 
 Images were generated with Higgsfield (`gpt_image_2_5`) and background-removed there.
+
+## Go live (GitHub Pages, not indexable yet)
+
+The site can be public on GitHub Pages before launch without search engines indexing it.
+- **Switch:** `INDEXABLE` in `lib/site.ts`. While `false` (now), every page has `<meta name="robots" content="noindex, nofollow">` and `robots.txt` lists no sitemap. Crawling stays allowed so crawlers can read the noindex (blocking them in `robots.txt` would let the bare URL get listed anyway). The 404 page is always `noindex`.
+- **Launch day:** set `INDEXABLE = true`, push to `main` (the workflow redeploys), then submit `sitemap.xml` in Google Search Console and Bing Webmaster Tools and request indexing of the homepage.
+- **Base path:** on `<owner>.github.io/superherosantaclaus/` the deploy builds with `BASE_PATH=/superherosantaclaus`. Checked Nov 7: CSS, fonts, backdrop, the cast image, deferred images, and `site.js` loading GSAP/Lenis from `/superherosantaclaus/vendor/` all work, as does the form. After the custom domain is set, re-run the workflow so it rebuilds for `/`.
+- Canonical, Open Graph and JSON-LD URLs always point at `https://superherosantaclaus.com/`, so nothing needs changing at launch apart from the switch.
+
+## Placeholders waiting on the owner
+
+On the page as dashed `[bracketed]` boxes (`class="ph"` inline, `.ph-box` for blocks). Search `content/home.html` for `class="ph"` / `ph-box`. None of them is in the JSON-LD; add the real values there too when they arrive.
+- **Author:** name (book details, `#author` heading), a two-line bio, a photo (`.author-photo`: replace the box with an `<img>`, square, at least 520 px). Then add `"author":{"@type":"Person","name":…}` to the Book node.
+- **Book details** (`#book`): release date, print price, ebook price, page count, ISBN, where to buy. Then add `datePublished`, `numberOfPages`, `isbn`, `bookFormat` and `offers` (price, availability, retailer URL) to the Book node.
+- **Page spreads:** three finished spreads for `.spreads` (3:2 boxes; WebP, ~1200 px wide, `data-defer` like the other below-the-fold images).
+- **FAQ:** the release date and retailers in two answers, and one more question and answer in the owner's words. When an answer has no placeholder left, add it to the `FAQPage` node in `content/jsonld.json` (only fully answered questions are there now) and to `public/llms.txt`.
+- **Optional:** social profile URLs, for `sameAs` on the Organization.
 
 ## Backlog (in rough priority order)
 
