@@ -22,7 +22,7 @@ _Last updated 2026-10-17. Picks up from a long Cowork design session; this repo 
 | `#series` | Three series cards; card 1 (Book One) has the book-one spread full-bleed across its top |
 | `#join` | Launch-list CTA |
 
-**Interactions (`public/js/site.js`):** preloader; Lenis smooth scroll; parallax via `data-depth`; tap a character → speech bubble from `data-say`; hidden-object hunt (candy cane `#cane`, star `#gstar`, peeking Reindeer `#deer`/`#peek`) with counter `#counter` and confetti `#conf`; sound toggle `#sfx`; `prefers-reduced-motion` respected.
+**Interactions (`public/js/site.js`):** no splash screen (the hero animates in on load); Lenis smooth scroll; parallax via `data-depth`; tap a character → speech bubble from `data-say`; hidden-object hunt (candy cane `#cane`, star `#gstar`, peeking Reindeer `#deer`/`#peek`) with counter `#counter` and confetti `#conf`; sound toggle `#sfx`; `prefers-reduced-motion` respected.
 
 ## How the hero works (read before touching it)
 

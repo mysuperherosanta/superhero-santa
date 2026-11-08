@@ -4,7 +4,6 @@
   window.scrollTo(0,0);
   var rm=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var hasGsap=typeof gsap!=='undefined'&&typeof ScrollTrigger!=='undefined';
-  var pre=document.getElementById('pre');
   var nav=document.getElementById('nav');
   var $$=function(s,c){return Array.prototype.slice.call((c||document).querySelectorAll(s));};
 
@@ -100,7 +99,6 @@
 
   if(rm||!hasGsap){
     doc.classList.add(rm?'rm':'no-js');
-    if(pre&&pre.parentNode)pre.parentNode.removeChild(pre);
     $$('.rv').forEach(function(e){e.classList.add('in');});
     window.addEventListener('scroll',onScroll,{passive:true});onScroll();
     return;
@@ -119,17 +117,13 @@
   ScrollTrigger.batch('.rv',{start:'top 90%',onEnter:function(els){els.forEach(function(e){e.classList.add('in');});},once:true});
   window.addEventListener('load',function(){setTimeout(safety,300);setTimeout(safety,1500);});
 
-  /* preloader -> hero */
+  /* hero entrance */
   var h1Lines=$$('.hero-copy h1 .l > span');
   gsap.set(h1Lines,{yPercent:110});
   gsap.set('.ch:not(.ch-deer) .fig',{yPercent:60,opacity:0});
   var mob=window.matchMedia('(max-width:900px)').matches;
   var intro=gsap.timeline({defaults:{ease:'expo.out'}});
-  intro.to('#pre .shield',{strokeDashoffset:0,duration:.6,ease:'power2.inOut'})
-       .to('#pre .star',{scale:1,duration:.4,ease:'back.out(2)'},'-=.15')
-       .to('#pre',{yPercent:-100,duration:.7,ease:'expo.inOut'},'+=.1')
-       .add(function(){if(pre&&pre.parentNode)pre.parentNode.removeChild(pre);})
-       .to(h1Lines,{yPercent:0,duration:1,stagger:.09},'-=.45')
+  intro.to(h1Lines,{yPercent:0,duration:1,stagger:.09})
        .to('.ch:not(.ch-deer) .fig',{yPercent:0,opacity:1,duration:.9,stagger:.09,ease:'back.out(1.6)',clearProps:'transform,opacity'},'<+.1')
        .from('.hero-copy .label,.hero-copy p,.hero-cta,.minibook,.hint',{y:20,opacity:0,duration:.8,stagger:.08,clearProps:'all'},'-=.7');
 
