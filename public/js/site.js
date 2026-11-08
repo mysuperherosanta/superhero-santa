@@ -11,10 +11,6 @@
   var sp=document.getElementById('sparkles');
   if(sp){for(var q=0;q<34;q++){var d=document.createElement('i');d.style.left=(Math.random()*100)+'%';d.style.top=(Math.random()*100)+'%';d.style.animationDelay=(Math.random()*3.2)+'s';sp.appendChild(d);}}
 
-  /* twinkle stars in the sky */
-  var stars=document.getElementById('stars');
-  if(stars){for(var i=0;i<40;i++){var st=document.createElement('i');st.style.left=(Math.random()*100)+'%';st.style.top=(Math.random()*55)+'%';st.style.animationDelay=(Math.random()*3)+'s';var ss=3+Math.random()*4;st.style.width=ss+'px';st.style.height=ss+'px';stars.appendChild(st);}}
-
   /* ── sound: tiny sleigh bell, WebAudio, no files ── */
   var AC=window.AudioContext||window.webkitAudioContext,actx=null,muted=false;
   function bell(f,when,vol){if(muted||!actx)return;var t0=actx.currentTime+(when||0);
@@ -125,13 +121,8 @@
   var intro=gsap.timeline({defaults:{ease:'expo.out'}});
   intro.to(h1Lines,{yPercent:0,duration:1,stagger:.09})
        .to('.ch:not(.ch-deer) .fig',{yPercent:0,opacity:1,duration:.9,stagger:.09,ease:'back.out(1.6)',clearProps:'transform,opacity'},'<+.1')
-       .from('.hero-copy .label,.hero-copy p,.hero-cta,.minibook,.hint',{y:20,opacity:0,duration:.8,stagger:.08,clearProps:'all'},'-=.7');
+       .from('.hero-copy .label,.hero-copy p,.hero-cta,.minibook',{y:20,opacity:0,duration:.8,stagger:.08,clearProps:'all'},'-=.7');
 
-  /* mouse parallax on the scene */
-  if(!mob){
-    var layers=$$('#hero [data-depth]').map(function(el){return {el:el,d:parseFloat(el.getAttribute('data-depth')),x:gsap.quickTo(el,'x',{duration:.8,ease:'power3'}),y:gsap.quickTo(el,'y',{duration:.8,ease:'power3'})};});
-    document.getElementById('hero').addEventListener('pointermove',function(e){var r=e.currentTarget.getBoundingClientRect();var nx=(e.clientX-r.left)/r.width-.5,ny=(e.clientY-r.top)/r.height-.5;layers.forEach(function(l){l.x(nx*l.d*r.width*-1);l.y(ny*l.d*r.height*-.6);});},{passive:true});
-  }
   gsap.to('.hero-copy',{y:-40,opacity:.4,ease:'none',scrollTrigger:{trigger:'#hero',start:'top top',end:'bottom top',scrub:true}});
 
   /* falling snow (canvas) */
